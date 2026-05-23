@@ -1,0 +1,86 @@
+\documentclass[11pt]{article}
+
+% ----------------- Pacotes Essenciais -----------------
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[brazil]{babel}
+\usepackage{amsmath, amsfonts, amssymb}
+\usepackage{float}
+\usepackage{booktabs}
+\usepackage{caption}
+\usepackage{xcolor}
+\usepackage{tcolorbox}
+\usepackage{hyperref}
+\usepackage[a4paper, margin=2.5cm]{geometry} % Margens configuradas sem conflito
+\usepackage{listings}
+\usepackage{graphicx, url}
+
+% ----------------- Cores e Estilo para Código (Ex: R) -----------------
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{lightgray}{rgb}{0.95,0.95,0.95}
+\definecolor{mygreen}{rgb}{0,0.6,0}
+\definecolor{myblue}{rgb}{0,0,0.8}
+
+\lstset{
+	language=R,
+	backgroundcolor=\color{lightgray},
+	basicstyle=\ttfamily\small,
+	keywordstyle=\color{myblue}\bfseries,
+	commentstyle=\color{mygreen},
+	stringstyle=\color{gray},
+	numbers=left,
+	numberstyle=\tiny\color{gray},
+	stepnumber=1,
+	numbersep=5pt,
+	showspaces=false,
+	showstringspaces=false,
+	showtabs=false,
+	frame=single,
+	breaklines=true,
+	tabsize=2,
+	inputencoding=utf8,
+	extendedchars=true
+}
+
+% ----------------- Informações do Documento -----------------
+\title{\textbf{Relatório de Atividades \\[0.3em]}}
+\author{Arthur Vitola, Henrique Prange, Kauan Moura, Marcos Silva\\
+	Programa de Pós-Graduação em Ciência da Computação\\
+	CCET - Unioeste}
+\date{\today}
+
+\begin{document}
+	
+	\maketitle
+	\tableofcontents
+	\newpage
+	
+	% ================================================================================
+	\input{secoes/01_introducao/introducao}
+	\newpage
+	
+	\input{secoes/02_simulacao/simulacao}
+	\newpage
+	
+	\input{secoes/03_distribuicoes_discretas/dist_discretas}
+	\newpage
+	
+	\input{secoes/04_distribuicoes_continuas/dist_continuas}
+	\newpage
+	
+	\input{secoes/05_esperanca_variancia/esperanca_variancia}    
+	\newpage
+	
+	\input{secoes/06_atividade_integradora/atividade_integradora}
+	\newpage
+	
+	% ================================================================================
+	\input{secoes/07_conclusao/conclusao}
+	\newpage
+	
+	% ================================================================================
+	% Seção de Referências
+	\bibliographystyle{unsrt}
+	\bibliography{referencias} 
+	
+\end{document}
