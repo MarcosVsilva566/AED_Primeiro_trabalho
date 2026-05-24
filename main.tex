@@ -1,19 +1,26 @@
 \documentclass[11pt]{article}
 
-% ----------------- Pacotes Essenciais -----------------
+% ----------------- Codificação e Idioma -----------------
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage[brazil]{babel}
+
+% ----------------- Pacotes Essenciais e Gráficos -----------------
 \usepackage{amsmath, amsfonts, amssymb}
 \usepackage{float}
 \usepackage{booktabs}
 \usepackage{caption}
 \usepackage{xcolor}
 \usepackage{tcolorbox}
-\usepackage{hyperref}
-\usepackage[a4paper, margin=2.5cm]{geometry} % Margens configuradas sem conflito
-\usepackage{listings}
 \usepackage{graphicx, url}
+\usepackage[a4paper, margin=2.5cm]{geometry} 
+\usepackage{listings}
+
+% ----------------- Hyperref e Bibliografia (Ordem Importante) -----------------
+% O hyperref precisa ser carregado ANTES do backref e do abntex2cite
+\usepackage{hyperref} 
+\usepackage[brazilian,hyperpageref]{backref}     % Paginas com as citações na bibl
+\usepackage[alf]{abntex2cite}                    % Citações padrão ABNT
 
 % ----------------- Cores e Estilo para Código (Ex: R) -----------------
 \definecolor{gray}{rgb}{0.5,0.5,0.5}
@@ -43,7 +50,7 @@
 }
 
 % ----------------- Informações do Documento -----------------
-\title{\textbf{Relatório de Atividades \\[0.3em]}}
+\title{\textbf{Relatório de Atividades}}
 \author{Arthur Vitola, Henrique Prange, Kauan Moura, Marcos Silva\\
 	Programa de Pós-Graduação em Ciência da Computação\\
 	CCET - Unioeste}
@@ -83,7 +90,7 @@
 	
 	% ================================================================================
 	% Seção de Referências
-	\bibliographystyle{unsrt}
+	\bibliographystyle{abntex2-alf}
 	\bibliography{referencias} 
 	
 \end{document}

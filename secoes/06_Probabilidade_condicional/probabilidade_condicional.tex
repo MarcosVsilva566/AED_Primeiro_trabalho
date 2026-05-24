@@ -1,1 +1,85 @@
 \section{Probabilidade Condicional, Independência e Teorema de Bayes}
+
+
+\subsection{Probabilidade condicional}
+
+
+Na análise de eventos aleatórios, a imprevisibilidade dos resultados é inerente ao processo. A obtenção de informações parciais prévias pode alterar a estimativa de probabilidade da ocorrência de um determinado evento. Considere, por exemplo, o cálculo da probabilidade de se obter uma soma igual a $8$ no lançamento de dois dados não viciados. A probabilidade a priori desse evento é de $\frac{5}{36}$. Entretanto, ao realizar o lançamento de um dos dados primeiramente, adquire-se uma informação que condiciona a expectativa do evento final. Se o primeiro dado apresentar a face $5$, será estritamente necessário obter a face $3$ no segundo lançamento, cuja probabilidade isolada é de $\frac{1}{6}$. Portanto, dado que o resultado inicial foi $5$, a probabilidade de obter uma soma igual a $8$ é atualizada de $\frac{5}{36}$ para $\frac{1}{6}$. Em contrapartida, assuma que o primeiro lançamento resulte na face $1$. Nesse contexto, torna-se impossível atingir a soma $8$, independentemente do valor obtido no lançamento subsequente. Por conseguinte, sob essa condição, a probabilidade de se obter o resultado de $8$ torna-se nula. \cite{Dougas_2002}
+
+A probabilidade condicional nos diz que a probabilidade do evento $A$ ocorrer dado que $B$ é definida por:
+
+\begin{equation}
+	P(A\mid B) = \frac{P(A\cap B)}{P(B)} , P(B) \neq 0
+\end{equation}
+
+Tomemos o exemplo descrito anteriormente:
+\begin{itemize}
+	\item $A$: soma 8 no lançamento de um par de dados;
+	\item $B$: obter 5 no primeiro dado.
+\end{itemize}
+
+Calcular $P(A\mid B)$, temos as probabilidades: 
+\begin{itemize}
+	\item[] $P(B) = \frac{1}{6}$
+	\item[] $P(A \cap  B) \text{ só pode ocorrer se obtivermos \{5,3\}}= \frac{1}{36}$
+\end{itemize}
+
+Assim temos: 
+
+\begin{align*}
+	P(A\mid B) = \frac{\frac{1}{36}}{\frac{1}{6}} = \frac{1}{6}
+\end{align*}
+
+
+Segue a representação matricial do problema: 
+\begin{itemize}
+	\item \textcolor{blue}{\textbf{Azul}}: Representa o \textbf{Evento B}.
+	\item \textcolor{green}{\textbf{Verde}}: Representa os casos do \textbf{Evento A} que ocorrem fora do Evento B.
+	\item \textcolor{red}{\textbf{Vermelho}}: Representa a \textbf{Interseção}.
+\end{itemize}
+
+
+
+$$\begin{bmatrix}
+	(1,1) & (1,2) & (1,3) & (1,4) & (1,5) & (1,6) \\
+	(2,1) & (2,2) & (2,3) & (2,4) & (2,5) & \color{green}{(2,6)} \\
+	(3,1) & (3,2) & (3,3) & (3,4) & \color{green}{(3,5)} & (3,6) \\
+	(4,1) & (4,2) & (4,3) & \color{green}{(4,4)} & (4,5) & (4,6) \\
+	\color{blue}{(5,1)} & \color{blue}{(5,2)} & \color{red}{(5,3)} & \color{blue}{(5,4)} & \color{blue}{(5,5)} & \color{blue}{(5,6)} \\
+	(6,1) & \color{green}{(6,2)} & (6,3) & (6,4) & (6,5) & (6,6)
+\end{bmatrix}$$
+\newpage
+
+
+
+\subsection{Independência de Eventos}
+
+
+Dois eventos são ditos independentes quando a realização de um não altera o espaço amostral ou a probabilidade de ocorrência do outro. Para ilustrar essa propriedade, considere o lançamento sequencial de dois dados ideais. Definem-se os eventos:
+\begin{itemize}
+	\item[] $A$: obtenção da face $3$ no primeiro ensaio;
+	\item[] $B$: obtenção da face $5$ no segundo ensaio.
+\end{itemize}
+As probabilidades de cada evento são $P(A) = P(B) = \frac{1}{6}$. Dado que os lançamentos são independentes, a informação sobre a ocorrência de $B$ não afeta a probabilidade de $A$, o que implica que $P(A \mid B) = \frac{1}{6}$.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
