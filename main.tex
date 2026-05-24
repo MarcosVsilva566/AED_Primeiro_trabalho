@@ -6,7 +6,7 @@
 \usepackage[brazil]{babel}
 
 % ----------------- Pacotes Essenciais e Gráficos -----------------
-\usepackage{amsmath, amsfonts, amssymb}
+\usepackage{amsmath, amsfonts, amssymb, amsthm}
 \usepackage{float}
 \usepackage{booktabs}
 \usepackage{caption}
@@ -15,6 +15,22 @@
 \usepackage{graphicx, url}
 \usepackage[a4paper, margin=2.5cm]{geometry} 
 \usepackage{listings}
+
+
+
+% ----------------- Pacote e configuração para gerenciar as definições -----------------
+\theoremstyle{definition} 
+\newtheorem{definicao}{Definição}
+\newtheorem{corolario}{Corolário}
+\newtheorem{axioma}{Axioma}
+\newtheorem{exemplo}{Exemplo}
+
+
+% ----------------- Formatação de Parágrafos -----------------
+\usepackage{indentfirst}
+\setlength{\parindent}{1.25cm} 
+\setlength{\parskip}{0.2cm}    
+
 
 % ----------------- Hyperref e Bibliografia (Ordem Importante) -----------------
 % O hyperref precisa ser carregado ANTES do backref e do abntex2cite
@@ -27,6 +43,7 @@
 \definecolor{lightgray}{rgb}{0.95,0.95,0.95}
 \definecolor{mygreen}{rgb}{0,0.6,0}
 \definecolor{myblue}{rgb}{0,0,0.8}
+
 
 \lstset{
 	language=R,

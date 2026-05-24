@@ -1,4 +1,41 @@
+
+
 \section{Probabilidade Condicional, Independência e Teorema de Bayes}
+
+
+\subsection{Axiomas de Kolmogorov}
+
+
+
+Para continuarmos nosso estudo precisamos definir um espaço de probabilidade, representado por três elementos: $(\Omega, \mathcal{A}, P)$. Nesse modelo, $\Omega$ é o espaço amostral , $\mathcal{A}$ representa os eventos que podemos calcular e $P$ é a própria medida de probabilidade. Os seguintes axiomas foram criadas por Andrey Kolmogorov em 1933 \cite{kolmogorov1933grundbegriffe}:
+
+
+\begin{axioma}
+	Para qualquer evento $A$ no espaço amostral, a probabilidade é um valor não negativo:
+	\begin{align*}
+		P(A) \geq 0, P(A) \in \mathbb{R}
+	\end{align*}
+\end{axioma}
+
+\begin{axioma}
+	A probabilidade de todo o espaço amostral $\Omega$  é igual a um:
+	\begin{align*}
+		P(\Omega) = 1
+	\end{align*}
+\end{axioma}
+
+\begin{axioma}
+	Se $A_1, A_2, \dots, A_k$ são conjuntos disjuntos, então:
+	\begin{align*}
+		P(A_1 \cup A_2 \cup \dots \cup A_k) = P(A_1) + P(A_2) + \dots + P(A_k)
+	\end{align*}
+	ou
+	\begin{align*}
+		P\left(\bigcup_{k=1}^{\infty} A_i\right) = \sum_{k=1}^{\infty} P(A_i)
+	\end{align*}
+\end{axioma}
+
+
 
 
 \subsection{Probabilidade condicional}
@@ -12,10 +49,14 @@ A probabilidade condicional nos diz que a probabilidade do evento $A$ ocorrer da
 	P(A\mid B) = \frac{P(A\cap B)}{P(B)} , P(B) \neq 0
 \end{equation}
 
-Tomemos o exemplo descrito anteriormente:
+
+
+
+\begin{exemplo}
+Tomemos o caso descrito anteriormente:
 \begin{itemize}
-	\item $A$: soma 8 no lançamento de um par de dados;
-	\item $B$: obter 5 no primeiro dado.
+	\item[] $A$: soma 8 no lançamento de um par de dados;
+	\item[] $B$: obter 5 no primeiro dado.
 \end{itemize}
 
 Calcular $P(A\mid B)$, temos as probabilidades: 
@@ -48,6 +89,14 @@ $$\begin{bmatrix}
 	\color{blue}{(5,1)} & \color{blue}{(5,2)} & \color{red}{(5,3)} & \color{blue}{(5,4)} & \color{blue}{(5,5)} & \color{blue}{(5,6)} \\
 	(6,1) & \color{green}{(6,2)} & (6,3) & (6,4) & (6,5) & (6,6)
 \end{bmatrix}$$
+
+
+
+\end{exemplo}
+
+
+
+
 \newpage
 
 
@@ -60,21 +109,32 @@ Dois eventos são ditos independentes quando a realização de um não altera o 
 	\item[] $A$: obtenção da face $3$ no primeiro ensaio;
 	\item[] $B$: obtenção da face $5$ no segundo ensaio.
 \end{itemize}
-As probabilidades de cada evento são $P(A) = P(B) = \frac{1}{6}$. Dado que os lançamentos são independentes, a informação sobre a ocorrência de $B$ não afeta a probabilidade de $A$, o que implica que $P(A \mid B) = \frac{1}{6}$.
+As probabilidades de cada evento são $P(A) = P(B) = \frac{1}{6}$. Dado que os lançamentos são independentes, a informação sobre a ocorrência de $B$ não afeta a probabilidade de $A$, o que implica que $P(A \mid B) = P(A) = \frac{1}{6}$.
+
+A definição formal de independência é: 
+
+\begin{definicao}[Eventos Independentes]
+	Dois eventos $A$ e $B$ em um espaço amostral são considerados independentes se a ocorrência de um não afeta a probabilidade de ocorrência do outro. Em termos de probabilidade condicional, assumindo que $P(B) > 0$, dizemos que $A$ é independente de $B$ se:
+	$$P(A \mid B) = P(A)$$
+
+\end{definicao}
+
+\begin{corolario}
+	Como resultado direto da independência entre os eventos $A$ e $B$, a probabilidade de ambos ocorrerem simultaneamente é obtida pelo produto de suas probabilidades individuais:
+	\[
+	P(A \cap B) = P(A) \cdot P(B)
+	\]
+\end{corolario}
 
 
 
-
-
-
-
-
-
-
-
-
-
-
+\begin{exemplo}
+Temos um servidor de arquivos, com taxa de falha de $0,01$, e um servidor de backup como réplica do servidor principal, com taxa de falha de $0,01$, qual a probabilidade de ambos falharem?\\
+Se os dois sistemas são independentes, basta multiplicar as probabilidades:
+\begin{align*}
+	P(A \text{ e } B) = P(A) \cdot P(B) = 0,01 \cdot 0,01 = 0,0001
+\end{align*}
+\end{exemplo}
 
 
 
