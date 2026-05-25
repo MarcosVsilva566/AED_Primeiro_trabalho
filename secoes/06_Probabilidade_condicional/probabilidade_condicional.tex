@@ -7,11 +7,11 @@
 
 
 
-Para continuarmos nosso estudo precisamos definir um espaço de probabilidade, representado por três elementos: $(\Omega, \mathcal{A}, P)$. Nesse modelo, $\Omega$ é o espaço amostral , $\mathcal{A}$ representa os eventos que podemos calcular e $P$ é a própria medida de probabilidade. Os seguintes axiomas foram criadas por Andrey Kolmogorov em 1933 \cite{kolmogorov1933grundbegriffe}:
+Para continuarmos nosso estudo precisamos definir um espaço de probabilidade, representado por três elementos: $(\Omega, \mathcal{F}, P)$. Nesse modelo, $\Omega$ é o espaço amostral , $\mathcal{F}$ representa os eventos que podemos calcular e $P$ é a própria medida de probabilidade. Os seguintes axiomas foram criadas por Andrey Kolmogorov em 1933 \cite{kolmogorov1933grundbegriffe}:
 
 
 \begin{axioma}
-	Para qualquer evento $A$ no espaço amostral, a probabilidade é um valor não negativo:
+	Para qualquer evento $A \in F$ , a probabilidade é um valor não negativo:
 	\begin{align*}
 		P(A) \geq 0, P(A) \in \mathbb{R}
 	\end{align*}
@@ -24,7 +24,7 @@ Para continuarmos nosso estudo precisamos definir um espaço de probabilidade, r
 	\end{align*}
 \end{axioma}
 
-\begin{axioma}
+\begin{axioma}\label{axioma_3_kolmogorov}
 	Se $A_1, A_2, \dots, A_k$ são conjuntos disjuntos, então:
 	\begin{align*}
 		P(A_1 \cup A_2 \cup \dots \cup A_k) = P(A_1) + P(A_2) + \dots + P(A_k)
@@ -45,11 +45,9 @@ Na análise de eventos aleatórios, a imprevisibilidade dos resultados é ineren
 
 A probabilidade condicional nos diz que a probabilidade do evento $A$ ocorrer dado que $B$ é definida por:
 
-\begin{equation}
+\begin{equation} \label{probabilidade_condicional}
 	P(A\mid B) = \frac{P(A\cap B)}{P(B)} , P(B) \neq 0
 \end{equation}
-
-
 
 
 \begin{exemplo}
@@ -90,16 +88,73 @@ $$\begin{bmatrix}
 	(6,1) & \color{green}{(6,2)} & (6,3) & (6,4) & (6,5) & (6,6)
 \end{bmatrix}$$
 
-
-
 \end{exemplo}
 
+\subsection{Regra do Produto}
+
+
+A Regra do Produto permite expressar a probabilidade da ocorrência simultânea de diversos eventos a partir do valor de cada probabilidade condicional de cada um deles dados os eventos anteriores.
+
+A equação \ref{probabilidade_condicional}, resulta no teorema do produto, ou probabilidade do evento intersecção.
+
+
+\begin{teorema}[Teorema do Produto]
+	Para dois eventos:
+	\begin{align*}
+		P(A \cap B) = P(A) \cdot P(B\mid A) = P(B) \cdot P(A\mid B)
+	\end{align*}
+	Para tês eventos:
+	\begin{align*}
+	P(A \cap B \cap C) = P(A) \cdot P(B\mid A) \cdot P(C \mid A\cap B)
+	\end{align*}
+	Forma geral:
+	\begin{equation}\label{teorema_produto}
+	P\left(\bigcap_{i=1}^{k} A_i\right) = P(A_1) \cdot P(A_2 | A_1) \cdot P(A_3 | A_1 \cap A_2) \cdots P(A_k | A_1 \cap \cdots \cap A_{k-1})
+	\end{equation}
+\end{teorema}
 
 
 
-\newpage
+\subsection{Lei da Probabilidade Total}
 
 
+Dizemos que $A_1, A_2, \cdots , \in F$ formam uma partição de $\Omega$, se são disjuntos e $\cup_k B = \Omega$. Partições são particularmente úteis em contextos onde determinado aspecto divide os resultados possíveis em casos, e é possível expressar determinadas relações em cada um desses casos separadamente.\cite{Leonardo2026}
+
+
+\begin{teorema}[Teorema da Probabilidade Total]
+	Seja uma sequência enumerável de eventos aleatórios $A_1,A_2, \dots ,A_k$, formando uma partição de $\Omega$. Como as intersecções $A_i \cap B$ são mutuamente excludentes, então de \ref{axioma_3_kolmogorov} temos:
+	
+	\begin{align*}
+		P(B) = \sum_{i=1}^{k} P(A_i \cap B)
+	\end{align*}
+	
+	Aplicando \ref{teorema_produto} temos :
+	
+	\begin{equation}\label{teorema_probabilidade_total}
+		P(B) = \sum_{i} P(A_i) \cdot P(B \mid A_i)
+	\end{equation}
+	
+\end{teorema}
+
+\subsection{Teorema de Bayes}
+
+Do teorema da probabilidade total, podemos desenvolver o Teorema de Bayes.Tomando \ref{probabilidade_condicional}, podemos calcular a probabilidade de $A_i$, dada a ocorrência de $B$ por:
+
+\begin{align*}
+	P(A_i\mid B) = \frac{P(A_i\cap B)}{P(B)}
+\end{align*}
+\\
+Aplicando o Teorema da probabilidade total \ref{teorema_probabilidade_total} no denominador e a regra do produto \ref{teorema_produto} no númerador, temos: 
+
+
+
+\begin{teorema}[Teorema de Bayes]
+\begin{equation}\label{Teorema_bayes}
+	P(A_i\mid B) = \frac{P(A_i) \cdot P(B\mid A_i)}{\sum_{j} P(A_i) \cdot P(B\mid A_i)}
+\end{equation}
+\end{teorema}
+
+O teorema de Bayes é útil quando conhecemos as probabilidades condicionais de $B$ dado $A_i$, mas não diretamente a probabilidade de $B$ \cite{zabala_fe}.
 
 \subsection{Independência de Eventos}
 
@@ -118,14 +173,6 @@ A definição formal de independência é:
 	$$P(A \mid B) = P(A)$$
 
 \end{definicao}
-
-\begin{corolario}
-	Como resultado direto da independência entre os eventos $A$ e $B$, a probabilidade de ambos ocorrerem simultaneamente é obtida pelo produto de suas probabilidades individuais:
-	\[
-	P(A \cap B) = P(A) \cdot P(B)
-	\]
-\end{corolario}
-
 
 
 \begin{exemplo}
