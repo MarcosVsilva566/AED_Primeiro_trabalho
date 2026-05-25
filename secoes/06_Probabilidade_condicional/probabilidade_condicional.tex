@@ -156,6 +156,21 @@ Aplicando o Teorema da probabilidade total \ref{teorema_probabilidade_total} no 
 
 O teorema de Bayes é útil quando conhecemos as probabilidades condicionais de $B$ dado $A_i$, mas não diretamente a probabilidade de $B$ \cite{zabala_fe}.
 
+
+\begin{exemplo}
+	Suponha uma caixa com três moedas, uma equilibrada e duas com duas faces cara. A probabilidade condicional de a moeda sorteada ter sido a equilibrada pode ser calculada. Para isso pode-se definir $A_1$: "a moeda retirada é equilibrada", $A_1 = \frac{1}{3}$, $A_2$: "a moeda retirada tem duas caras",$A_2 = \frac{2}{3}$  e $B$: "o resultado final é cara", $B = \frac{5}{6}$ e aplicar a regra de Bayes, resultando em:
+
+\begin{align*}
+	P(A_1\mid B) = \frac{P(A_1) \cdot P(B\mid A_1)}{P(A_1) \cdot P(B\mid A_1) + P(A_2) \cdot P(B \mid A_2)} = \frac{\frac{1}{3} \cdot \frac{1}{2}}{\frac{1}{3} \cdot \frac{1}{2} + \frac{2}{3} \cdot 1} = \frac{1}{5}
+\end{align*}
+	
+	
+	
+\end{exemplo}
+
+
+
+
 \subsection{Independência de Eventos}
 
 
@@ -166,7 +181,6 @@ Dois eventos são ditos independentes quando a realização de um não altera o 
 \end{itemize}
 As probabilidades de cada evento são $P(A) = P(B) = \frac{1}{6}$. Dado que os lançamentos são independentes, a informação sobre a ocorrência de $B$ não afeta a probabilidade de $A$, o que implica que $P(A \mid B) = P(A) = \frac{1}{6}$.
 
-A definição formal de independência é: 
 
 \begin{definicao}[Eventos Independentes]
 	Dois eventos $A$ e $B$ em um espaço amostral são considerados independentes se a ocorrência de um não afeta a probabilidade de ocorrência do outro. Em termos de probabilidade condicional, assumindo que $P(B) > 0$, dizemos que $A$ é independente de $B$ se:
@@ -184,7 +198,9 @@ Se os dois sistemas são independentes, basta multiplicar as probabilidades:
 \end{exemplo}
 
 
+\subsection{Simulações em R}
 
+te
 
 
 
