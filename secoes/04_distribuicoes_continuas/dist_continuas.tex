@@ -1,1 +1,85 @@
 \section{Distribuições Contínuas}
+Nesta seção, explora-se o comportamento das distribuições contínuas Uniforme, Exponencial e Normal através do prisma do Teorema Central do Limite (TCL). A modelagem computacional permite visualizar de forma prática como a soma de variáveis aleatórias independentes e identicamente distribuídas (i.i.d.) de naturezas não-normais converge assintoticamente para uma distribuição Gaussiana padrão à medida que o tamanho amostral $n$ cresce.
+
+\subsection{Modelagem Teórica e Formulação}
+
+Consideremos duas distribuições base para o experimento de simulação:
+\begin{enumerate}
+    \item \textbf{Distribuição Uniforme ($X \sim U(0, 1)$):} Caracterizada por uma densidade constante no intervalo $[0, 1]$, onde a média teórica é $\mu = 0.5$ e a variância é $\sigma^2 = \frac{1}{12} \approx 0.0833$.
+    \item \textbf{Distribuição Exponencial ($Y \sim Exp(\lambda = 2)$):} Modelagem fortemente assimétrica à direita, com média teórica $\mu = \frac{1}{\lambda} = 0.5$ e variância $\sigma^2 = \frac{1}{\lambda^2} = 0.25$.
+\end{enumerate}
+
+O Teorema Central do Limite dita que, dada uma sequência de variáveis aleatórias i.i.d. com média $\mu$ e variância $\sigma^2$ finitas, a média amostral padronizada $Z$ converge em distribuição para uma Normal padrão à medida que $n \to \infty$:
+\begin{equation}
+    Z = \frac{\bar{X}_n - \mu}{\sigma / \sqrt{n}} \xrightarrow{d} \mathcal{N}(0, 1)
+\end{equation}
+
+\subsection{Resultados e Análise Crítica}
+
+Os impactos do tamanho amostral na convergência podem ser observados nas figuras geradas pelas simulações empíricas.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.49\textwidth]{t3_tcl_uniforme.png}
+    \includegraphics[width=0.49\textwidth]{t3_tcl_exponencial.png}
+    \caption{Demonstração empírica do TCL para as distribuições Uniforme (esquerda) e Exponencial (direita) sob diferentes valores de $n$ frente à curva teórica normal padrão (em vermelho).}
+    \label{fig:tcl_graficos}
+\end{figure}
+
+A análise visual dos histogramas revela características fundamentais da convergência assintótica:
+\begin{itemize}
+    \item Para $n=1$, os gráficos reproduzem a densidade original das variáveis: o perfil plano da Uniforme e o decaimento geométrico assimétrico da Exponencial.
+    \item Para $n=2$ e $n=5$, observa-se um comportamento de transição. Na distribuição uniforme, a soma gera o perfil triangular, aproximando-se rapidamente do formato em sino. Na exponencial, a forte assimetria original começa a ser suavizada pela soma.
+    \item Em $n=30$, em ambos os cenários, a aderência à curva teórica padrão $\mathcal{N}(0,1)$ torna-se evidente. Isso valida computacionalmente o teorema, mostrando que mesmo sob fortes violações de simetria original, o estimador da média amostral converge para a normalidade.
+\end{itemize}
+
+O script em R customizado para esta simulação encontra-se documentado no Código \ref{lst:script_t3}.
+
+\begin{lstlisting}[language=R, caption={Simulação do Teorema Central do Limite (T3).}, label=lst:script_t3]
+# T3: Distribuições Contínuas (Teorema Central do Limite)
+set.seed(42) 
+
+if(!require(ggplot2)) install.packages("ggplot2")
+if(!require(gridExtra)) install.packages("gridExtra")
+
+library(ggplot2)
+library(gridExtra)
+
+simular_tcl <- function(dist = c("uniforme", "exponencial"), n_vals, M = 10000) {
+  plots <- list()
+  
+  for(n in n_vals) {
+    if(dist == "uniforme") {
+      dados <- matrix(runif(M * n, min = 0, max = 1), nrow = M, ncol = n)
+      mu_teorica <- 0.5
+      sigma_teorica <- sqrt(1/12)
+    } else {
+      dados <- matrix(rexp(M * n, rate = 2), nrow = M, ncol = n)
+      mu_teorica <- 0.5
+      sigma_teorica <- 0.5
+    }
+    
+    medias_amostrais <- rowMeans(dados)
+    medias_padronizadas <- (medias_amostrais - mu_teorica) / (sigma_teorica / sqrt(n))
+    df <- data.frame(z = medias_padronizadas)
+    
+    p <- ggplot(df, aes(x = z)) +
+      geom_histogram(aes(y = after_stat(density)), bins = 40, fill = "seagreen3", color = "black", alpha = 0.6) +
+      stat_function(fun = dnorm, args = list(mean = 0, sd = 1), color = "darkred", linewidth = 1) +
+      labs(title = paste("n =", n), x = "Z", y = "Densidade") +
+      theme_minimal() +
+      xlim(-4, 4)
+    
+    plots[[paste("n", n, sep="_")]] <- p
+  }
+  return(plots)
+}
+
+plots_unif <- simular_tcl("uniforme", c(1, 2, 5, 30))
+g_unif <- marrangeGrob(plots_unif, ncol = 2, nrow = 2, top = "Convergência da Distribuição Uniforme")
+ggsave("imagens/t3_tcl_uniforme.png", g_unif, width = 8, height = 6)
+
+plots_exp <- simular_tcl("exponencial", c(1, 2, 5, 30))
+g_exp <- marrangeGrob(plots_exp, ncol = 2, nrow = 2, top = "Convergência da Distribuição Exponencial")
+ggsave("imagens/t3_tcl_exponencial.png", g_exp, width = 8, height = 6)
+\end{lstlisting}
