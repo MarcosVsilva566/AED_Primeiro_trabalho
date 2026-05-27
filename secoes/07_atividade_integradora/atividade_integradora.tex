@@ -1,1 +1,89 @@
 \section{Atividade Integradora Final}
+
+
+\subsection{Modelagem Estocástica de Filas e Análise de Tráfego Urbano}
+
+O objetivo consiste em simular a dinâmica de atendimento de uma linha de tráfego veicular (cabine de pedágio) para mensurar o impacto da variabilidade sobre as filas e os tempos de retenção. Adotam-se as seguintes hipóteses probabilísticas de um modelo de filas M/M/1:
+\begin{enumerate}
+    \item Os tempos entre chegadas consecutivas de veículos ($T_A$) seguem uma distribuição Exponencial com taxa $\lambda = 4$ carros/minuto ($T_A \sim Exp(4)$).
+    \item O tempo de atendimento individual na cabine ($T_S$) é modelado por uma distribuição Exponencial com taxa $\mu = 5$ carros/minuto ($T_S \sim Exp(5)$).
+    \item O sistema opera sob regime de disciplina estrita FIFO (\textit{First-In, First-Out}) com intensidade de tráfego teórica dada por $\rho = \frac{\lambda}{\mu} = \frac{4}{5} = 0.80$ (80\% de ocupação nominal).
+\end{enumerate}
+
+\subsubsection{Resultados e Interpretação Probabilística}
+
+A Tabela \ref{tab:t6_resultados} confronta as expectativas matemáticas exatas do modelo de filas com as métricas extraídas da simulação empírica de $N = 5.000$ veículos.
+
+\begin{table}[H]
+    \centering
+    \caption{Métricas Operacionais Obtidas via Simulação de Tráfego Estocástico.}
+    \label{tab:t6_resultados}
+    \vspace{2mm}
+    \begin{tabular}{lccc}
+        \toprule
+        \textbf{Indicador de Desempenho} & \textbf{Modelo Teórico} & \textbf{Resultado Empírico} \\ \midrule
+        Tempo Médio no Sistema ($W$) & 1,0000 min & 0,9525 min \\
+        Tempo Médio na Fila ($W_q$) & 0,8000 min & 0,7501 min \\
+        Probabilidade de Fila Vazia ($P_0$) & 0,2000 (20,0\%) & 0,1806 (18,06\%) \\ \bottomrule
+    \end{tabular}
+\end{table}
+
+A distribuição empírica dos tempos de retenção dos veículos na fila aguardando atendimento está ilustrada no histograma da Figura \ref{fig:t6_grafico_fila}.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\textwidth]{t6_analise_trafego.png}
+    \caption{Densidade empírica do tempo de espera gasto por veículo retido na fila antes do início do serviço.}
+    \label{fig:t6_grafico_fila}
+\end{figure}
+
+A partir dos dados analíticos e gráficos obtidos, as seguintes conclusões de engenharia podem ser consolidadas:
+\begin{itemize}
+    \item \textbf{Comportamento da Fila:} O histograma revela uma alta densidade acumulada no valor zero. No entanto, a curva exibe uma cauda longa que se estende além de 4 minutos, mostrando o risco de atrasos severos devido à variabilidade estocástica.
+    \item \textbf{Efeito Não-Linear de Saturação:} Embora a capacidade média do servidor ($\mu=5$) seja superior à demanda média de chegada ($\lambda=4$), a aleatoriedade estocástica cria agrupamentos temporários que geram congestionamento. Isso comprova que em sistemas de computação e tráfego real, a variabilidade impede a eficiência máxima nominal de 100\%.
+\end{itemize}
+
+\subsubsection{Implementação Computacional}
+
+A lógica computacional da esteira de eventos discretos da simulação está exposta no Código \ref{lst:script_t6}.
+
+\begin{lstlisting}[language=R, caption={Simulação de Eventos Discretos para Fila M/M/1 (T6).}, label=lst:script_t6]
+# T6: Atividade Integradora (Análise de Tráfego de Veículos)
+set.seed(777)
+
+if(!require(ggplot2)) install.packages("ggplot2")
+library(ggplot2)
+
+N <- 5000
+lambda <- 4  
+mu <- 5      
+
+interchegadas <- rexp(N, rate = lambda)
+tempos_servico <- rexp(N, rate = mu)
+
+instantes_chegada <- cumsum(interchegadas)
+instantes_inicio_servico <- numeric(N)
+instantes_fim_servico <- numeric(N)
+
+for(i in 1:N) {
+  if(i == 1) {
+    instantes_inicio_servico[i] <- instantes_chegada[i]
+  } else {
+    instantes_inicio_servico[i] <- max(instantes_chegada[i], instantes_fim_servico[i-1])
+  }
+  instantes_fim_servico[i] <- instantes_inicio_servico[i] + tempos_servico[i]
+}
+
+tempo_na_fila <- instantes_inicio_servico - instantes_chegada
+df_trafego <- data.frame(EsperaFila = tempo_na_fila)
+
+p_fila <- ggplot(df_trafego, aes(x = EsperaFila)) +
+  geom_histogram(aes(y = after_stat(density)), bins = 50, fill = "firebrick3", color = "black", alpha = 0.6) +
+  geom_vline(xintercept = mean(tempo_na_fila), color = "blue", linetype = "dashed", linewidth = 1) +
+  labs(title = "Distribuição do Tempo de Espera na Fila de Tráfego",
+       x = "Tempo de Espera Retido na Fila (Minutos)",
+       y = "Densidade") +
+  theme_minimal()
+
+ggsave("imagens/t6_analise_trafego.png", p_fila, width = 8, height = 5)
+\end{lstlisting}
