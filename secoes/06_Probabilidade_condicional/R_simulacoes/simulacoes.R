@@ -1,43 +1,33 @@
-# ==================================================
-# Script: Simulações de Probabilidade Aplicada / Bayes
-# Disciplina: Probabilidade e Estatística
-# Objetivo: Implementar 5 simulações independentes com
-#           cálculo de probabilidades, teorema de Bayes e gráficos.
-# Autor: [Seu Nome]
-# ==================================================
 
-# --- Instalação/Carregamento de Pacotes ---
-pkgs <- c("ggplot2", "dplyr", "tidyr", "gridExtra")
-for (pkg in pkgs) {
-  if (!require(pkg, character.only = TRUE)) {
-    install.packages(pkg, dependencies = TRUE)
-    library(pkg, character.only = TRUE)
-  }
-}
+# --- Carregamento de Pacotes ---
 
-# --- Semente para reprodutibilidade ---
+
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+library(gridExtra)
+library(xtable)
+
 set.seed(1234)
 
 # ==================================================
-# SEÇÃO 1: Filtro Anti-Spam
+# Filtro Anti-Spam
 # ==================================================
 cat("\n========== SEÇÃO 1: FILTRO ANTI-SPAM ==========\n")
 
-# Objetivo: Avaliar o desempenho de um filtro de spam
-# usando probabilidades condicionais e teorema de Bayes.
 
 # Definição dos eventos:
 # S: email é spam (S) ou não (N)
 # F: filtro classifica como spam (positivo) ou não (negativo)
 
 # Parâmetros iniciais:
-prev_spam <- 0.20     # Prevalência de spam
+  prev_spam <- 0.20     # Prevalência de spam
 sens_filtro <- 0.95   # Sensibilidade: P(F+|S)
 espec_filtro <- 0.90  # Especificidade: P(F-|N)
 
 # Simulação de 10000 emails
 n <- 10000
-spam_real <- rbinom(n, 1, prev_spam)  # 1 = spam, 0 = não spam
+spam_real <- rbinom(n, 1, prev_spam)
 
 # Aplicação do filtro (simulação condicional)
 # Se for spam, probabilidade de classificar como spam = sens_filtro
@@ -57,6 +47,13 @@ confusion <- table(Real = ifelse(spam_real, "Spam", "Não Spam"),
 cat("Matriz de Confusão:\n")
 print(confusion)
 
+print(xtable(confusion, 
+             caption = "Matriz de Confusão do Filtro de Spam", 
+             label = "tab:matriz_confusao"), 
+      type = "latex", 
+      include.rownames = TRUE)
+
+
 # Cálculos probabilísticos
 # Probabilidade total de filtro positivo:
 P_F_pos <- prev_spam * sens_filtro + (1 - prev_spam) * (1 - espec_filtro)
@@ -67,10 +64,6 @@ VPP <- (prev_spam * sens_filtro) / P_F_pos
 VPN <- ((1 - prev_spam) * espec_filtro) / (1 - P_F_pos)
 cat(sprintf("VPP (P(Spam|F+)) = %.4f\n", VPP))
 cat(sprintf("VPN (P(Não Spam|F-)) = %.4f\n", VPN))
-
-# Interpretação:
-cat("Interpretação: O filtro tem alta sensibilidade e especificidade,\n")
-cat(sprintf("mas devido à baixa prevalência de spam (%.0f%%), o VPP é moderado.\n", prev_spam*100))
 
 # Gráfico: Barras da classificação real vs predita (apenas proporções)
 df1 <- data.frame(
@@ -91,7 +84,7 @@ print(g1)
 cat("\n==================================================\n")
 
 # ==================================================
-# SEÇÃO 2: Sistema de Alarmes
+# Sistema de Alarme
 # ==================================================
 cat("========== SEÇÃO 2: SISTEMA DE ALARMES ==========\n")
 
