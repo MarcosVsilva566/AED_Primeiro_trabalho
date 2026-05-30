@@ -156,6 +156,21 @@ Aplicando o Teorema da probabilidade total \ref{teorema_probabilidade_total} no 
 
 O teorema de Bayes é útil quando conhecemos as probabilidades condicionais de $B$ dado $A_i$, mas não diretamente a probabilidade de $B$ \cite{zabala_fe}.
 
+
+\begin{exemplo}
+	Suponha uma caixa com três moedas, uma equilibrada e duas com duas faces cara. A probabilidade condicional de a moeda sorteada ter sido a equilibrada pode ser calculada. Para isso pode-se definir $A_1$: "a moeda retirada é equilibrada", $A_1 = \frac{1}{3}$, $A_2$: "a moeda retirada tem duas caras",$A_2 = \frac{2}{3}$  e $B$: "o resultado final é cara", $B = \frac{5}{6}$ e aplicar a regra de Bayes, resultando em:
+
+\begin{align*}
+	P(A_1\mid B) = \frac{P(A_1) \cdot P(B\mid A_1)}{P(A_1) \cdot P(B\mid A_1) + P(A_2) \cdot P(B \mid A_2)} = \frac{\frac{1}{3} \cdot \frac{1}{2}}{\frac{1}{3} \cdot \frac{1}{2} + \frac{2}{3} \cdot 1} = \frac{1}{5}
+\end{align*}
+	
+	
+	
+\end{exemplo}
+
+
+
+
 \subsection{Independência de Eventos}
 
 
@@ -166,7 +181,6 @@ Dois eventos são ditos independentes quando a realização de um não altera o 
 \end{itemize}
 As probabilidades de cada evento são $P(A) = P(B) = \frac{1}{6}$. Dado que os lançamentos são independentes, a informação sobre a ocorrência de $B$ não afeta a probabilidade de $A$, o que implica que $P(A \mid B) = P(A) = \frac{1}{6}$.
 
-A definição formal de independência é: 
 
 \begin{definicao}[Eventos Independentes]
 	Dois eventos $A$ e $B$ em um espaço amostral são considerados independentes se a ocorrência de um não afeta a probabilidade de ocorrência do outro. Em termos de probabilidade condicional, assumindo que $P(B) > 0$, dizemos que $A$ é independente de $B$ se:
@@ -184,9 +198,75 @@ Se os dois sistemas são independentes, basta multiplicar as probabilidades:
 \end{exemplo}
 
 
+\subsection{Simulações em R}
 
 
 
+\subsubsection{Filtro Anti-Spam}
 
 
+Este experimento busca avaliar o desempenho de um classificador Binário, um filtro anti-spam. Para simular o cenário, utilizamos uma simulação estocástica de $n = 10.000$ observações (e-mails). O experimento assume os seguintes parâmetros e características do filtro: 
+
+\begin{itemize}
+	\item Prevalência -- $P(S)$ : probabilidade de um e-mail ser classificado como spam é de $20\%$;
+	\item Sensibilidade --  ($P(F^+|S)$): taxa de verdadeiros positivos é de $95\%$;
+	\item Especifidade -- $P(F^-|\neg S))$  taxa de verdadeiros negativos é de $90\%$, logo a taxa de falsos positivos é de $P(F^+|\neg S) = 90\%$ 
+
+\end{itemize}
+
+A geração dos dados reais seguiu uma distribuição Binomial (via função rbinom), alocando cada e-mail nas categorias "Spam" ou "Não Spam" com base na prevalência estipulada. Em seguida, a classificação do filtro foi aplicada condicionalmente à classe real de cada e-mail, respeitando as taxas de sensibilidade e especificidade predefinidas. Assim gerando a seguinte matriz de confusão, com a quantidade de cada categoria.
+
+\begin{table}[ht]
+	\centering
+	\begin{tabular}{rrr}
+		\hline
+		& Não Spam & Spam \\ 
+		\hline
+		Não Spam & 7202 & 812 \\ 
+		Spam &  83 & 1903 \\ 
+		\hline
+	\end{tabular}
+	\caption{Matriz de Confusão do Filtro de Spam} 
+	\label{tab:matriz_confusao}
+\end{table}
+
+
+
+Utilizando o (teorema da probabilidade total) \ref{teorema_probabilidade_total}, temos que a probabilidade do filtro classificar qualquer e-email como spam  $P(F^+)$ é dada por:
+
+
+\begin{align*}
+	P(F^+) = P(S) \cdot P(F^+|S) + P(\neg S) \cdot P(F^+|\neg S) = 0.27 = 27 \%
+\end{align*}
+
+A partir disto, utilizando o Teorema de Bayes \ref{Teorema_bayes} podemos calcular as métricas de performance do filtro. 
+
+\begin{itemize}
+	
+	\item Valor Preditivo Positivo $P(S|F^+)$: A probabilidade de o e-mail ser spam, dado que o filtro o classificou como tal
+	$$P(S|F^+) = \frac{P(S) \cdot P(F^+|S)}{P(F^+)} = 0,7037 = 70,37 \%$$
+	
+	\item Valor Preditivo Negativo $P(\neg S|F^-)$: A probabilidade de o e-mail ser legítimo, dado que o filtro o classificou como não spam.
+	
+		$$P(\neg S|F^-) = \frac{P(\neg S) \cdot P(F^-|\neg S)}{1 - P(F^+)} = 0,9863 = 98,63 \%$$
+	
+	
+\end{itemize}
+
+
+Logo abaixo podemos observar as proporções de classificação.
+
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=0.8\textwidth]{secoes/06_Probabilidade_condicional/imagens/Anti_spam_proporcoes_classificacao.png}
+	\caption{Filtro Anti-Spam: Proporções de Classificação.}
+	\label{fig:minha_imagem}
+\end{figure}
+
+
+O valor predito positivo $P(S|F^+)$, ou seja, a chance do e-mail ser realemnte um spam, ficou em $70,37\%$ o que é baixo para um filtro anti spam, embora a especificidade do filtro ser de $90\%$, a baixa prevalência original de spam $20\%$ faz com que o volume de e-mails legítimos classificados como spam seja muito grande.
+
+O valor predito negativo $P(\neg S|F^-)$, ou seja, a chance do e-mail ser classificado como legitimo, sendo que ele é um spam, é de $98,63\%$, o que é adequado para um filtro de spam.
+
+\subsubsection{Sistema de Alarmes}
 

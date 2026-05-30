@@ -12,3 +12,5 @@
 *.xdv
 *.pdf
 *.brf
+.Rproj.user
+.positai
