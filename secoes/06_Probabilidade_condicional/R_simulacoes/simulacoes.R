@@ -15,7 +15,6 @@ set.seed(1234)
 # ==================================================
 cat("\n========== SEÇÃO 1: FILTRO ANTI-SPAM ==========\n")
 
-
 # Definição dos eventos:
 # S: email é spam (S) ou não (N)
 # F: filtro classifica como spam (positivo) ou não (negativo)
@@ -47,6 +46,7 @@ confusion <- table(Real = ifelse(spam_real, "Spam", "Não Spam"),
 cat("Matriz de Confusão:\n")
 print(confusion)
 
+# exportar matriz de confusão para latex
 print(xtable(confusion, 
              caption = "Matriz de Confusão do Filtro de Spam", 
              label = "tab:matriz_confusao"), 
@@ -54,7 +54,7 @@ print(xtable(confusion,
       include.rownames = TRUE)
 
 
-# Cálculos probabilísticos
+
 # Probabilidade total de filtro positivo:
 P_F_pos <- prev_spam * sens_filtro + (1 - prev_spam) * (1 - espec_filtro)
 cat(sprintf("P(Filtro positivo) = %.4f\n", P_F_pos))
@@ -65,7 +65,7 @@ VPN <- ((1 - prev_spam) * espec_filtro) / (1 - P_F_pos)
 cat(sprintf("VPP (P(Spam|F+)) = %.4f\n", VPP))
 cat(sprintf("VPN (P(Não Spam|F-)) = %.4f\n", VPN))
 
-# Gráfico: Barras da classificação real vs predita (apenas proporções)
+# Gráfico: Barras da classificação real vs predita
 df1 <- data.frame(
   Real = c("Spam", "Não Spam"),
   Predito_Spam = c(confusion[1,2]/sum(confusion[1,]), confusion[2,2]/sum(confusion[2,])),
@@ -87,9 +87,6 @@ cat("\n==================================================\n")
 # Sistema de Alarme
 # ==================================================
 cat("========== SEÇÃO 2: SISTEMA DE ALARMES ==========\n")
-
-# Objetivo: Modelar a ocorrência de intrusão e falha elétrica,
-# que afetam o disparo do alarme. Usar probabilidade total e Bayes.
 
 # Definição dos eventos:
 # I: intrusão (I) ou não (NI)
@@ -123,6 +120,20 @@ for (i in 1:n2) {
     alarme[i] <- rbinom(1,1,0.001)
   }
 }
+
+# Matriz de confusão
+confusion <- table(Real = ifelse(intrusao, "Intrusão", "Não Intrusão"),
+                   Filtro = ifelse(falha, "Intrusão", "Não Intrusão"))
+cat("Matriz de Confusão:\n")
+print(confusion)
+
+# exportar matriz de confusão para latex
+print(xtable(confusion, 
+             caption = "Matriz de Confusão do Sistema de alarme", 
+             label = "tab:matriz_confusao_sistema_de_alarme"), 
+      type = "latex", 
+      include.rownames = TRUE)
+
 
 # Probabilidade total do alarme:
 P_A <- P_I*P_F*0.99 + P_I*(1-P_F)*0.95 + (1-P_I)*P_F*0.10 + (1-P_I)*(1-P_F)*0.001
