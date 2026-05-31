@@ -1,1 +1,51 @@
 \section{Conclusão}
+
+Este relatório percorreu conceitos centrais da teoria da probabilidade combinando o
+tratamento teórico com experimentos computacionais em R. Em todos os estudos as
+estimativas empíricas se aproximaram dos valores previstos pela teoria, e esse
+acordo entre o que foi calculado e o que foi observado ilustra como a simulação pode
+validar resultados analíticos.
+
+A simulação de experimentos aleatórios mostrou que a frequência relativa de um
+evento se estabiliza em torno de sua probabilidade teórica à medida que o número de
+repetições cresce. O lançamento da moeda, a retirada de bolas da urna e a soma de
+dois dados reproduziram as probabilidades teóricas, e a média amostral da soma
+convergiu para o seu valor esperado, como prevê a Lei dos Grandes Números
+\cite{ross2010probabilidade}.
+
+O estudo das distribuições discretas e contínuas evidenciou o papel dos principais
+modelos na descrição de variáveis aleatórias. A análise das distribuições contínuas
+destacou o Teorema Central do Limite, segundo o qual a média de variáveis
+independentes e identicamente distribuídas se aproxima de uma distribuição normal
+mesmo quando a variável de origem é fortemente assimétrica. A verificação da
+esperança e da variância de uma variável exponencial confirmou novamente a Lei dos
+Grandes Números, com erro relativo reduzido entre as estimativas e os valores
+teóricos.
+
+A probabilidade condicional, a independência e o Teorema de Bayes forneceram a base
+para problemas de decisão sob incerteza em aplicações como a filtragem de spam, o
+diagnóstico médico, a autenticação biométrica e a detecção de intrusão. Esses
+estudos mostraram, em particular, que a probabilidade a posteriori de um evento
+depende fortemente de sua prevalência, o que explica por que testes precisos podem
+produzir muitos alarmes falsos quando o evento é raro.
+
+A atividade integradora final reuniu esses conceitos em diferentes estudos de
+inspiração computacional. O filtro bayesiano de spam, construído sobre a hipótese de
+independência condicional, alcançou alta acurácia na separação entre mensagens
+legítimas e indesejadas e permitiu ajustar o limiar de decisão conforme a tolerância
+a cada tipo de erro. A análise de confiabilidade apontou que a redundância em
+paralelo eleva o tempo médio até a falha de um sistema, ao passo que o arranjo em
+série o reduz, o que evidencia o ganho obtido com a replicação de componentes. A
+modelagem da fila de atendimento revelou que a variabilidade dos tempos de chegada e
+de serviço impede que um servidor opere na sua capacidade nominal máxima, gerando
+congestionamentos mesmo quando a taxa média de atendimento supera a de chegada.
+Estudos como os de confiabilidade e de filas apoiam-se em modelos clássicos da
+probabilidade aplicada \cite{ross2024models}.
+
+De modo geral, os resultados indicam que a simulação computacional é um recurso útil
+para compreender e validar a teoria da probabilidade, sobretudo em situações de
+difícil tratamento analítico \cite{harcholbalter2024probability}. A recorrência da
+Lei dos Grandes Números e do Teorema Central do Limite ao longo dos estudos reforça
+o papel desses dois resultados, que sustentam tanto a estimação de probabilidades
+por frequência quanto o comportamento das médias amostrais observado em cada
+experimento.

@@ -1,1 +1,51 @@
 \section{Introdução}
+
+A incerteza é um elemento inerente a muitos fenômenos estudados na Ciência da
+Computação, desde o tempo de resposta de um servidor até o resultado de um
+classificador automático. A teoria da probabilidade oferece a linguagem formal
+para descrever esses fenômenos e raciocinar sobre eles de maneira quantitativa,
+tendo se tornado indispensável na Computação \cite{harcholbalter2024probability}.
+Sua base axiomática moderna foi estabelecida por Andrey Kolmogorov em 1933
+\cite{kolmogorov1933grundbegriffe}. Na engenharia, a mesma teoria fundamenta a
+metodologia estatística empregada na resolução de problemas reais
+\cite{montgomery2018applied}.
+
+Boa parte da Computação atual gira em torno de dados, que são inseparáveis da
+probabilidade \cite{chan2021probability}. A estatística reúne os métodos de coleta,
+análise e interpretação de dados que permitem extrair informação e apoiar decisões
+\cite{sahu2024probability}, de modo que estatística e computação se consolidam como
+recursos fundamentais na pesquisa e na indústria \cite{ferreira2020estatistica}.
+Conceitos como esperança, variância, independência e o Teorema de Bayes aparecem de
+forma recorrente em problemas de classificação, diagnóstico e avaliação de
+desempenho.
+
+Nem sempre as probabilidades de interesse podem ser obtidas por via puramente
+analítica, e a simulação computacional surge como alternativa para estimá-las pela
+repetição de um experimento aleatório. Essa abordagem é amplamente usada na
+avaliação do desempenho de sistemas computacionais
+\cite{harcholbalter2024probability} e tem respaldo na Lei dos Grandes Números, que
+garante a convergência das frequências observadas para as probabilidades teóricas
+\cite{ross2010probabilidade}. As simulações deste trabalho foram conduzidas em R,
+uma linguagem e ambiente para computação estatística e gráfica
+\cite{ferreira2020estatistica}, bastante usado para ilustrar conceitos de
+probabilidade como o próprio Teorema Central do Limite \cite{sahu2024probability}.
+Em todos os experimentos foi fixada a semente do gerador de números aleatórios, o
+que assegura a reprodutibilidade dos resultados.
+
+O objetivo deste relatório é revisitar conceitos centrais da probabilidade
+combinando o tratamento teórico com experimentos computacionais em R, de modo que
+cada propriedade enunciada seja também verificada de forma empírica. O texto está
+organizado em torno desses dois eixos, o teórico e o computacional. A primeira
+parte trata da simulação de experimentos aleatórios simples, como o lançamento de
+uma moeda, a retirada de bolas de uma urna e a soma de dois dados, e introduz a
+frequência relativa como estimador de probabilidade. Em seguida são estudadas as
+distribuições discretas e as distribuições contínuas, com destaque para o Teorema
+Central do Limite, que descreve a aproximação da média amostral à distribuição
+normal. A esperança e a variância são então analisadas em conjunto com a Lei dos
+Grandes Números, que formaliza a estabilidade das médias amostrais. A parte
+seguinte aborda a probabilidade condicional, a independência de eventos e o Teorema
+de Bayes, aplicados a problemas como filtragem de spam, diagnóstico médico e
+autenticação biométrica. Por fim, uma atividade integradora final reúne vários
+estudos que aplicam e combinam os conceitos anteriores em problemas de inspiração
+computacional, alguns deles apoiados em modelos clássicos da probabilidade aplicada
+\cite{ross2024models}.
