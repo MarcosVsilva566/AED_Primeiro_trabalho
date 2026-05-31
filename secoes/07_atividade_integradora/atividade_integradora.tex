@@ -6,11 +6,11 @@
 
 \subsection{Modelagem Estocástica de Filas e Análise de Tráfego Urbano}
 
-O objetivo consiste em simular a dinâmica de atendimento de uma linha de tráfego veicular (cabine de pedágio) para mensurar o impacto da variabilidade sobre as filas e os tempos de retenção. Adotam-se as seguintes hipóteses probabilísticas de um modelo de filas M/M/1:
+O objetivo consiste em simular a dinâmica de atendimento de uma linha de tráfego veicular (cabine de pedágio) para mensurar o impacto da variabilidade sobre as filas e os tempos de retenção. Adotam-se as seguintes hipóteses probabilísticas de um modelo de filas M/M/1 \cite{ross2024models}:
 \begin{enumerate}
     \item Os tempos entre chegadas consecutivas de veículos ($T_A$) seguem uma distribuição Exponencial com taxa $\lambda = 4$ carros/minuto ($T_A \sim Exp(4)$).
     \item O tempo de atendimento individual na cabine ($T_S$) é modelado por uma distribuição Exponencial com taxa $\mu = 5$ carros/minuto ($T_S \sim Exp(5)$).
-    \item O sistema opera sob regime de disciplina estrita FIFO (\textit{First-In, First-Out}) com intensidade de tráfego teórica dada por $\rho = \frac{\lambda}{\mu} = \frac{4}{5} = 0.80$ (80\% de ocupação nominal).
+    \item O sistema opera sob regime de disciplina estrita FIFO (\textit{First-In, First-Out}) com intensidade de tráfego teórica dada por $\rho = \frac{\lambda}{\mu} = \frac{4}{5} = 0{,}80$ (80\% de ocupação nominal).
 \end{enumerate}
 
 \subsubsection{Resultados e Interpretação Probabilística}

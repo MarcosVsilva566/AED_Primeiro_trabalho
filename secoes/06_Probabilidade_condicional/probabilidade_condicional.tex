@@ -5,7 +5,7 @@
 
 \subsection{Axiomas de Kolmogorov}
 
-Para continuarmos nosso estudo precisamos definir um espaço de probabilidade, representado por três elementos: $(\Omega, \mathcal{F}, P)$. Nesse modelo, $\Omega$ é o espaço amostral , $\mathcal{F}$ representa os eventos que podemos calcular e $P$ é a própria medida de probabilidade. Os seguintes axiomas foram criadas por Andrey Kolmogorov em 1933 \cite{kolmogorov1933grundbegriffe}:
+Para dar continuidade ao estudo é necessário definir um espaço de probabilidade, representado por três elementos: $(\Omega, \mathcal{F}, P)$. Nesse modelo, $\Omega$ é o espaço amostral, $\mathcal{F}$ representa os eventos aos quais se pode atribuir probabilidade e $P$ é a própria medida de probabilidade. Os seguintes axiomas foram criados por Andrey Kolmogorov em 1933 \cite{kolmogorov1933grundbegriffe}:
 
 
 \begin{axioma}
@@ -41,7 +41,7 @@ Para continuarmos nosso estudo precisamos definir um espaço de probabilidade, r
 
 Na análise de eventos aleatórios, a imprevisibilidade dos resultados é inerente ao processo. A obtenção de informações parciais prévias pode alterar a estimativa de probabilidade da ocorrência de um determinado evento. Considere, por exemplo, o cálculo da probabilidade de se obter uma soma igual a $8$ no lançamento de dois dados não viciados. A probabilidade a priori desse evento é de $\frac{5}{36}$. Entretanto, ao realizar o lançamento de um dos dados primeiramente, adquire-se uma informação que condiciona a expectativa do evento final. Se o primeiro dado apresentar a face $5$, será estritamente necessário obter a face $3$ no segundo lançamento, cuja probabilidade isolada é de $\frac{1}{6}$. Portanto, dado que o resultado inicial foi $5$, a probabilidade de obter uma soma igual a $8$ é atualizada de $\frac{5}{36}$ para $\frac{1}{6}$. Em contrapartida, assuma que o primeiro lançamento resulte na face $1$. Nesse contexto, torna-se impossível atingir a soma $8$, independentemente do valor obtido no lançamento subsequente. Por conseguinte, sob essa condição, a probabilidade de se obter o resultado de $8$ torna-se nula. \cite{Dougas_2002}
 
-A probabilidade condicional nos diz que a probabilidade do evento $A$ ocorrer dado que $B$ é definida por:
+A probabilidade condicional do evento $A$ ocorrer dado que $B$ ocorreu é definida por:
 
 \begin{equation} \label{probabilidade_condicional}
 	P(A\mid B) = \frac{P(A\cap B)}{P(B)} , P(B) \neq 0
@@ -49,19 +49,19 @@ A probabilidade condicional nos diz que a probabilidade do evento $A$ ocorrer da
 
 
 \begin{exemplo}
-Tomemos o caso descrito anteriormente:
+Retomando o caso descrito anteriormente:
 \begin{itemize}
 	\item[] $A$: soma 8 no lançamento de um par de dados;
 	\item[] $B$: obter 5 no primeiro dado.
 \end{itemize}
 
-Calcular $P(A\mid B)$, temos as probabilidades: 
+Para calcular $P(A\mid B)$, as probabilidades são:
 \begin{itemize}
 	\item[] $P(B) = \frac{1}{6}$
 	\item[] $P(A \cap  B) \text{ só pode ocorrer se obtivermos \{5,3\}}= \frac{1}{36}$
 \end{itemize}
 
-Assim temos: 
+Portanto:
 
 \begin{align*}
 	P(A\mid B) = \frac{\frac{1}{36}}{\frac{1}{6}} = \frac{1}{6}
@@ -116,17 +116,17 @@ A equação \ref{probabilidade_condicional}, resulta no teorema do produto, ou p
 \subsection{Lei da Probabilidade Total}
 
 
-Dizemos que $A_1, A_2, \cdots , \in F$ formam uma partição de $\Omega$, se são disjuntos e $\cup_k B = \Omega$. Partições são particularmente úteis em contextos onde determinado aspecto divide os resultados possíveis em casos, e é possível expressar determinadas relações em cada um desses casos separadamente.\cite{Leonardo2026}
+Os eventos $A_1, A_2, \cdots \in F$ formam uma partição de $\Omega$ se são disjuntos e $\cup_k B = \Omega$. Partições são particularmente úteis em contextos onde determinado aspecto divide os resultados possíveis em casos, e é possível expressar determinadas relações em cada um desses casos separadamente.\cite{Leonardo2026}
 
 
 \begin{teorema}[Teorema da Probabilidade Total]
-	Seja uma sequência enumerável de eventos aleatórios $A_1,A_2, \dots ,A_k$, formando uma partição de $\Omega$. Como as intersecções $A_i \cap B$ são mutuamente excludentes, então de \ref{axioma_3_kolmogorov} temos:
+	Seja uma sequência enumerável de eventos aleatórios $A_1,A_2, \dots ,A_k$, formando uma partição de $\Omega$. Como as intersecções $A_i \cap B$ são mutuamente excludentes, então, pelo Axioma~\ref{axioma_3_kolmogorov}:
 	
 	\begin{align*}
 		P(B) = \sum_{i=1}^{k} P(A_i \cap B)
 	\end{align*}
 	
-	Aplicando \ref{teorema_produto} temos :
+	Aplicando a Equação~\ref{teorema_produto}:
 	
 	\begin{equation}\label{teorema_probabilidade_total}
 		P(B) = \sum_{i} P(A_i) \cdot P(B \mid A_i)
@@ -136,13 +136,13 @@ Dizemos que $A_1, A_2, \cdots , \in F$ formam uma partição de $\Omega$, se sã
 
 \subsection{Teorema de Bayes}
 
-Do teorema da probabilidade total, podemos desenvolver o Teorema de Bayes.Tomando \ref{probabilidade_condicional}, podemos calcular a probabilidade de $A_i$, dada a ocorrência de $B$ por:
+Do teorema da probabilidade total, é possível desenvolver o Teorema de Bayes. A partir da Equação~\ref{probabilidade_condicional}, a probabilidade de $A_i$ dada a ocorrência de $B$ é obtida por:
 
 \begin{align*}
 	P(A_i\mid B) = \frac{P(A_i\cap B)}{P(B)}
 \end{align*}
 \\
-Aplicando o Teorema da probabilidade total \ref{teorema_probabilidade_total} no denominador e a regra do produto \ref{teorema_produto} no númerador, temos: 
+Aplicando o Teorema da Probabilidade Total da Equação~\ref{teorema_probabilidade_total} no denominador e a regra do produto da Equação~\ref{teorema_produto} no numerador:
 
 
 
@@ -152,7 +152,7 @@ Aplicando o Teorema da probabilidade total \ref{teorema_probabilidade_total} no 
 \end{equation}
 \end{teorema}
 
-O teorema de Bayes é útil quando conhecemos as probabilidades condicionais de $B$ dado $A_i$, mas não diretamente a probabilidade de $B$ \cite{zabala_fe}.
+O teorema de Bayes é útil quando são conhecidas as probabilidades condicionais de $B$ dado $A_i$, mas não diretamente a probabilidade de $B$ \cite{zabala_fe}.
 
 
 \begin{exemplo}
@@ -188,7 +188,7 @@ As probabilidades de cada evento são $P(A) = P(B) = \frac{1}{6}$. Dado que os l
 
 
 \begin{exemplo}
-Temos um servidor de arquivos, com taxa de falha de $0,01$, e um servidor de backup como réplica do servidor principal, com taxa de falha de $0,01$, qual a probabilidade de ambos falharem?\\
+Considere um servidor de arquivos, com taxa de falha de $0,01$, e um servidor de backup como réplica do servidor principal, também com taxa de falha de $0,01$. Qual a probabilidade de ambos falharem?\\
 Se os dois sistemas são independentes, basta multiplicar as probabilidades:
 \begin{align*}
 	P(A \text{ e } B) = P(A) \cdot P(B) = 0,01 \cdot 0,01 = 0,0001
@@ -208,7 +208,7 @@ Por fim, com o intuito de garantir a transparência e a total reprodutibilidade 
 \subsubsection{Filtro Anti-Spam}
 
 
-Este experimento busca avaliar o desempenho de um classificador Binário, um filtro anti-spam. Para simular o cenário, utilizamos uma simulação estocástica de $n = 10.000$ observações (e-mails). O experimento assume os seguintes parâmetros e características do filtro: 
+Este experimento busca avaliar o desempenho de um classificador Binário, um filtro anti-spam. Para simular o cenário, foi utilizada uma simulação estocástica de $n = 10.000$ observações (e-mails). O experimento assume os seguintes parâmetros e características do filtro: 
 
 \begin{itemize}
 	\item Prevalência -- $P(S)$ : probabilidade de um e-mail ser classificado como spam é de $20\%$;
@@ -217,7 +217,7 @@ Este experimento busca avaliar o desempenho de um classificador Binário, um fil
 
 \end{itemize}
 
-A geração dos dados reais seguiu uma distribuição Binomial (via função rbinom), alocando cada e-mail nas categorias "Spam" ou "Não Spam" com base na prevalência estipulada. Em seguida, a classificação do filtro foi aplicada condicionalmente à classe real de cada e-mail, respeitando as taxas de sensibilidade e especificidade predefinidas. Assim gerando a seguinte matriz de confusão, com a quantidade de cada categoria.
+A geração dos dados reais seguiu uma distribuição Binomial (via função rbinom), alocando cada e-mail nas categorias "Spam" ou "Não Spam" com base na prevalência estipulada. Em seguida, a classificação do filtro foi aplicada condicionalmente à classe real de cada e-mail, respeitando as taxas de sensibilidade e especificidade predefinidas. A Tabela~\ref{tab:matriz_confusao} apresenta a matriz de confusão resultante, com a quantidade de cada categoria.
 
 \begin{table}[ht]
 	\centering
@@ -235,14 +235,14 @@ A geração dos dados reais seguiu uma distribuição Binomial (via função rbi
 
 
 
-Utilizando o (teorema da probabilidade total) \ref{teorema_probabilidade_total}, temos que a probabilidade do filtro classificar qualquer e-email como spam  $P(F^+)$ é dada por:
+Utilizando o teorema da probabilidade total da Equação~\ref{teorema_probabilidade_total}, a probabilidade de o filtro classificar qualquer e-mail como spam $P(F^+)$ é dada por:
 
 
 \begin{align*}
-	P(F^+) = P(S) \cdot P(F^+|S) + P(\neg S) \cdot P(F^+|\neg S) = 0.27 = 27 \%
+	P(F^+) = P(S) \cdot P(F^+|S) + P(\neg S) \cdot P(F^+|\neg S) = 0{,}27 = 27 \%
 \end{align*}
 
-A partir disto, utilizando o Teorema de Bayes \ref{Teorema_bayes} podemos calcular as métricas de performance do filtro. 
+A partir disto, utilizando o Teorema de Bayes da Equação~\ref{Teorema_bayes}, é possível calcular as métricas de desempenho do filtro.
 
 \begin{itemize}
 	
@@ -257,7 +257,7 @@ A partir disto, utilizando o Teorema de Bayes \ref{Teorema_bayes} podemos calcul
 \end{itemize}
 
 
-Logo abaixo podemos observar as proporções de classificação.
+A Figura~\ref{fig:minha_imagem} apresenta as proporções de classificação.
 
 \begin{figure}[h!]
 	\centering
@@ -362,23 +362,23 @@ O objetivo é mensurar a confiabilidade do disparo do alarme, ou seja, determina
 	\item $A$: Disparo do alarme.
 \end{itemize}
 
-Assumimos as seguintes probabilidades a priori:
+São assumidas as seguintes probabilidades a priori:
 \begin{itemize}
-	\item Probabilidade de intrusão: $P(I) = 0.01$ (1\%)
-	\item Probabilidade de falha elétrica: $P(F) = 0.05$ (5\%)
+	\item Probabilidade de intrusão: $P(I) = 0{,}01$ (1\%)
+	\item Probabilidade de falha elétrica: $P(F) = 0{,}05$ (5\%)
 \end{itemize}
 
 
 O comportamento do alarme é estocástico e depende do estado de intrusão e de falha elétrica. As probabilidades condicionais de disparo do alarme ($A$) sob diferentes circunstâncias são:
 \begin{itemize}
-	\item $P(A|I, F) = 0.99$ (Disparo em caso de intrusão simultânea a uma falha).
-	\item $P(A|I, F^c) = 0.95$ (Disparo em caso de intrusão sem falha elétrica).
-	\item $P(A|I^c, F) = 0.10$ (Probabilidade de falso positivo induzido apenas pela falha elétrica).
-	\item $P(A|I^c, F^c) = 0.001$ (Falso positivo por motivos aleatórios).
+	\item $P(A|I, F) = 0{,}99$ (Disparo em caso de intrusão simultânea a uma falha).
+	\item $P(A|I, F^c) = 0{,}95$ (Disparo em caso de intrusão sem falha elétrica).
+	\item $P(A|I^c, F) = 0{,}10$ (Probabilidade de falso positivo induzido apenas pela falha elétrica).
+	\item $P(A|I^c, F^c) = 0{,}001$ (Falso positivo por motivos aleatórios).
 \end{itemize}
 
 
-Dado as probabilidades de intrusão e de falha elétrica, simulamos $10000$ situações hipotéticas, usando a distribuição binomial, assim gerando: 
+Dadas as probabilidades de intrusão e de falha elétrica, foram simuladas $10000$ situações hipotéticas, usando a distribuição binomial, gerando a matriz de confusão da Tabela~\ref{tab:matriz_confusao_sistema_de_alarme}. 
 
 
 \begin{table}[ht]
@@ -407,21 +407,21 @@ Determinar a probabilidade do alarme disparar, $P(A)$, utilizando o Teorema da P
 
 Substituindo pelos parâmetros conhecidos:
 \begin{align*}
-	P(A) = (0.99 \cdot 0.01 \cdot 0.05) + (0.95 \cdot 0.01 \cdot 0.95)+ \\
-	 (0.10 \cdot 0.99 \cdot 0.05) + (0.001 \cdot 0.99 \cdot 0.95)
+	P(A) = (0{,}99 \cdot 0{,}01 \cdot 0{,}05) + (0{,}95 \cdot 0{,}01 \cdot 0{,}95)+ \\
+	 (0{,}10 \cdot 0{,}99 \cdot 0{,}05) + (0{,}001 \cdot 0{,}99 \cdot 0{,}95)
 \end{align*}
 \begin{align*}
-	P(A) \approx 0.0154 \quad (1.54\%)
+	P(A) \approx 0{,}0154 \quad (1{,}54\%)
 \end{align*}
 
 
-Para encontrar a probabilidade de ter ocorrido uma intrusão dado que o alarme tocou, $P(I|A)$, precisamos primeiro da probabilidade de o alarme tocar dado que houve uma intrusão, $P(A|I)$. Aplicando novamente a probabilidade total \ref{teorema_probabilidade_total} sobre as condições de falha:
+Para encontrar a probabilidade de ter ocorrido uma intrusão dado que o alarme tocou, $P(I|A)$, é necessário primeiro obter a probabilidade de o alarme tocar dado que houve uma intrusão, $P(A|I)$. Aplicando novamente a probabilidade total \ref{teorema_probabilidade_total} sobre as condições de falha:
 
 \begin{align*}
 	P(A|I) = P(A|I,F) \cdot P(F) + P(A|I,F^c) \cdot P(F^c)
 \end{align*}
 \begin{align*}
-	P(A|I) = (0.99 \cdot 0.05) + (0.95 \cdot 0.95) = 0.9520
+	P(A|I) = (0{,}99 \cdot 0{,}05) + (0{,}95 \cdot 0{,}95) = 0{,}9520
 \end{align*}
 
 Aplicando o Teorema de Bayes \ref{Teorema_bayes}:
@@ -429,11 +429,11 @@ Aplicando o Teorema de Bayes \ref{Teorema_bayes}:
 	P(I|A) = \frac{P(I) \times P(A|I)}{P(A)}
 \end{align*}
 \begin{align*}
-	P(I|A) = \frac{0.01 \times 0.9520}{0.0154} \approx 0.6178 \quad (61.2\%)
+	P(I|A) = \frac{0{,}01 \times 0{,}9520}{0{,}0154} \approx 0{,}6178 \quad (61{,}2\%)
 \end{align*}
 
 
-Os resultados indicam que, apesar da alta taxa de acerto do alarme em condições de intrusão $95.2\%$, a baixa probabilidade prévia do evento de intrusão aliada à influência das falhas elétricas faz com que a confiabilidade posterior seja moderada. Em termos práticos, interpreta-se que, quando o alarme dispara, a probabilidade real de haver uma intrusão no local é de $61.8\%$. Os $38.2\%$ restantes representam alarmes falsos, sendo predominantemente impulsionados pelas falhas elétricas na rede.
+Os resultados indicam que, apesar da alta taxa de acerto do alarme em condições de intrusão $95{,}2\%$, a baixa probabilidade prévia do evento de intrusão aliada à influência das falhas elétricas faz com que a confiabilidade posterior seja moderada. Em termos práticos, interpreta-se que, quando o alarme dispara, a probabilidade real de haver uma intrusão no local é de $61{,}8\%$. Os $38{,}2\%$ restantes representam alarmes falsos, sendo predominantemente impulsionados pelas falhas elétricas na rede.
 
 
 O código-fonte utilizado para esta análise encontra-se disponível no Código \ref{cod sistema de alarme}.
@@ -534,9 +534,9 @@ print(g2)
 
 \subsection{Análise do Classificador Probabilístico Naive Bayes}
 
-Nesta seção, avaliamos o desempenho e o comportamento do espaço de decisão de um classificador probabilístico Bayesiano Ingênuo (\textit{Naive Bayes}). O modelo foi treinado com um conjunto de dados simulado contendo 500 amostras, distribuídas em três classes ($C_1$, $C_2$ e $C_3$) e caracterizadas por dois atributos contínuos ($X_1$ e $X_2$). 
+Nesta seção, é avaliado o desempenho e o comportamento do espaço de decisão de um classificador probabilístico Bayesiano Ingênuo (\textit{Naive Bayes}). O modelo foi treinado com um conjunto de dados simulado contendo 500 amostras, distribuídas em três classes ($C_1$, $C_2$ e $C_3$) e caracterizadas por dois atributos contínuos ($X_1$ e $X_2$). 
 
-As probabilidades a priori das classes foram definidas empíricamente como $P(C_1) = 0.3$, $P(C_2) = 0.5$ e $P(C_3) = 0.2$. O modelo assume que, dado a classe, os atributos são condicionalmente independentes e seguem distribuições normais bivariadas. A probabilidade a posteriori para a classificação de um novo vetor de características $\mathbf{x} = (x_1, x_2)$ é dada pela regra de Bayes:
+As probabilidades a priori das classes foram definidas empíricamente como $P(C_1) = 0{,}3$, $P(C_2) = 0{,}5$ e $P(C_3) = 0{,}2$. O modelo assume que, dado a classe, os atributos são condicionalmente independentes e seguem distribuições normais bivariadas. A probabilidade a posteriori para a classificação de um novo vetor de características $\mathbf{x} = (x_1, x_2)$ é dada pela regra de Bayes:
 
 \begin{align*}
 	P(C_k \mid x_1, x_2) = \frac{P(C_k) \cdot f(x_1 \mid C_k) \cdot f(x_2 \mid C_k)}{\sum_{j=1}^{3} P(C_j) \cdot f(x_1 \mid C_j) \cdot f(x_2 \mid C_j)}
@@ -545,15 +545,15 @@ As probabilidades a priori das classes foram definidas empíricamente como $P(C_
 Onde $f(x_i \mid C_k)$ representa a função de densidade de probabilidade normal para o atributo $i$ na classe $k$.
 
 
-Para validar a capacidade preditiva do modelo, submeteu-se a instância arbitrária localizada nas coordenadas $(2.0, 1.0)$ ao classificador. Utilizando os parâmetros extraídos do treinamento, o algoritmo calculou as seguintes probabilidades a posteriori normalizadas:
+Para validar a capacidade preditiva do modelo, submeteu-se a instância arbitrária localizada nas coordenadas $(2{,}0, 1{,}0)$ ao classificador. Utilizando os parâmetros extraídos do treinamento, o algoritmo calculou as seguintes probabilidades a posteriori normalizadas:
 
 \begin{itemize}
-	\item $P(C_1 \mid \mathbf{x}) \approx 0.229$ ($22,9\%$)
-	\item $P(C_2 \mid \mathbf{x}) \approx 0.745$ ($74,5\%$)
-	\item $P(C_3 \mid \mathbf{x}) \approx 0.026$ ($2,6\%$)
+	\item $P(C_1 \mid \mathbf{x}) \approx 0{,}229$ ($22,9\%$)
+	\item $P(C_2 \mid \mathbf{x}) \approx 0{,}745$ ($74,5\%$)
+	\item $P(C_3 \mid \mathbf{x}) \approx 0{,}026$ ($2,6\%$)
 \end{itemize}
 
-Aplicando a regra de decisão \textit{Maximum A Posteriori} (MAP), o modelo atribui a instância à classe que maximiza a probabilidade. Conforme demonstrado pelos resultados, o ponto $(2.0, 1.0)$ foi corretamente predito como pertencente à classe \textbf{$C_2$}, evidenciando forte confiança na predição em virtude da alta margem probabilística em relação às demais classes.
+Aplicando a regra de decisão \textit{Maximum A Posteriori} (MAP), o modelo atribui a instância à classe que maximiza a probabilidade. Conforme demonstrado pelos resultados, o ponto $(2{,}0, 1{,}0)$ foi corretamente predito como pertencente à classe \textbf{$C_2$}, evidenciando forte confiança na predição em virtude da alta margem probabilística em relação às demais classes.
 
 
 Para uma compreensão espacial de como o algoritmo discrimina as classes, o espaço amostral foi mapeado por meio de uma grade (\textit{grid}) de coordenadas. A Figura \ref{fig:fronteiras_bayes} ilustra o diagrama de dispersão das amostras sobreposto às regiões de decisão do classificador probabilístico.
@@ -566,7 +566,7 @@ Para uma compreensão espacial de como o algoritmo discrimina as classes, o espa
 	\label{fig:fronteiras_bayes}
 \end{figure}
 
-Observa-se na Figura \ref{fig:fronteiras_bayes} que o modelo Naive Bayes, apesar de sua premissa de independência, é capaz de traçar fronteiras de decisão suaves e contínuas entre as distribuições. As linhas pretas demarcam os limiares exatos onde a probabilidade dominante transita entre duas classes, confirmando graficamente a dominância espacial da classe $C_2$ na região central, em concordância com o teste numérico realizado no ponto $(2.0, 1.0)$.
+Observa-se na Figura \ref{fig:fronteiras_bayes} que o modelo Naive Bayes, apesar de sua premissa de independência, é capaz de traçar fronteiras de decisão suaves e contínuas entre as distribuições. As linhas pretas demarcam os limiares exatos onde a probabilidade dominante transita entre duas classes, confirmando graficamente a dominância espacial da classe $C_2$ na região central, em concordância com o teste numérico realizado no ponto $(2{,}0, 1{,}0)$.
 
 O código-fonte utilizado para esta análise encontra-se disponível no Código \ref{cod cassificador_bayes}.
 
@@ -749,9 +749,9 @@ print(g4)
 
 \subsection{Diagnóstico Médico}
 
-Nesta sessão, abordamos a avaliação do desempenho de testes diagnósticos sob a ótica da epidemiologia quantitativa.
+Nesta seção, é abordada a avaliação do desempenho de testes diagnósticos sob a ótica da epidemiologia quantitativa.
 
-Para ilustrar este comportamento, analisamos um teste diagnóstico configurado com os seguintes parâmetros fixos:
+Para ilustrar este comportamento, é analisado um teste diagnóstico configurado com os seguintes parâmetros fixos:
 \begin{itemize}
 	\item \textbf{Sensibilidade ($S$):} $99\%$, representando a probabilidade de o teste resultar positivo dado que o indivíduo possui a patologia.
 	\item \textbf{Especificidade ($E$):} $95\%$, que indica a probabilidade de o teste resultar negativo dado que o indivíduo é saudável.
@@ -770,7 +770,7 @@ Com base no Teorema de Bayes \ref{Teorema_bayes}, a probabilidade pós-teste de 
 	VPN = \frac{(1 - \phi) \cdot E}{(1 - \phi) \cdot E + \phi \cdot (1 - S)}
 \end{align*}
 
-Para compreender a dinâmica das probabilidades, realizou-se uma simulação estocástica baseada em ensaios de Bernoulli, para uma amostra teórica de $N = 10.000$ indivíduos, considerando um cenário com prevalência moderada de $10\%$ ($\phi = 0{,}10$). A matriz de confusão resultante da simulação é apresentada na Tabela~\ref{tab:matriz_confusao}.
+Para compreender a dinâmica das probabilidades, realizou-se uma simulação estocástica baseada em ensaios de Bernoulli, para uma amostra teórica de $N = 10.000$ indivíduos, considerando um cenário com prevalência moderada de $10\%$ ($\phi = 0{,}10$). A matriz de confusão resultante da simulação é apresentada na Tabela~\ref{tab:matriz_confusao_teste_diagnostico}.
 
 \begin{table}[ht]
 	\centering
@@ -790,12 +790,12 @@ Para compreender a dinâmica das probabilidades, realizou-se uma simulação est
 
 A partir dos dados absolutos obtidos na simulação, extraem-se as métricas empíricas de diagnóstico para este cenário específico de prevalência a $10\%$:
 \begin{itemize}
-	\item \textbf{VPP Empírico:} $\frac{975}{1.413} \approx 69\%$. Isto demonstra que, mesmo utilizando um teste com sensibilidade de ($99\%$), cerca de $31\%$ dos indivíduos que receberam um resultado positivo são, na realidade, falsos positivos decorrentes dos $5\%$ de erro de especificidade sobre a grande massa de indivíduos saudáveis.
-	\item \textbf{VPN Empírico:} $\frac{8.576}{8.587} \approx 99{,}87\%$. O teste demonstra uma segurança elevada para descartar a doença, gerando $11$ falsos negativos.
+	\item \textbf{VPP Empírico:} $\frac{975}{1413} \approx 69\%$. Isto demonstra que, mesmo utilizando um teste com sensibilidade de ($99\%$), cerca de $31\%$ dos indivíduos que receberam um resultado positivo são, na realidade, falsos positivos decorrentes dos $5\%$ de erro de especificidade sobre a grande massa de indivíduos saudáveis.
+	\item \textbf{VPN Empírico:} $\frac{8576}{8587} \approx 99{,}87\%$. O teste demonstra uma segurança elevada para descartar a doença, gerando $11$ falsos negativos.
 \end{itemize}
 
 
-O comportamento dinâmico dos valores preditivos em todo o espectro de prevalências analisado pelo modelo pode ser visualizado no gráfico estatístico posicionado a seguir.
+O comportamento dinâmico dos valores preditivos em todo o espectro de prevalências analisado pelo modelo pode ser visualizado na Figura~\ref{fig:VPP_VPN}.
 
 
 

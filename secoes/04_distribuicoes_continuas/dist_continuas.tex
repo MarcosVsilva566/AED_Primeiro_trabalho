@@ -1,22 +1,23 @@
 \section{Distribuições Contínuas}
-Nesta seção, explora-se o comportamento das distribuições contínuas Uniforme, Exponencial e Normal através do prisma do Teorema Central do Limite (TCL). A modelagem computacional permite visualizar de forma prática como a soma de variáveis aleatórias independentes e identicamente distribuídas (i.i.d.) de naturezas não-normais converge assintoticamente para uma distribuição Gaussiana padrão à medida que o tamanho amostral $n$ cresce.
+Nesta seção, explora-se o comportamento das distribuições contínuas Uniforme, Exponencial e Normal através do prisma do Teorema Central do Limite (TCL). A modelagem computacional permite visualizar de forma prática como a soma de variáveis aleatórias independentes e identicamente distribuídas (i.i.d.) de naturezas não-normais converge assintoticamente para uma distribuição Gaussiana padrão à medida que o tamanho amostral $n$ cresce \cite{ross2010probabilidade}.
 
 \subsection{Modelagem Teórica e Formulação}
 
-Consideremos duas distribuições base para o experimento de simulação:
+São consideradas duas distribuições base para o experimento de simulação:
 \begin{enumerate}
-    \item \textbf{Distribuição Uniforme ($X \sim U(0, 1)$):} Caracterizada por uma densidade constante no intervalo $[0, 1]$, onde a média teórica é $\mu = 0.5$ e a variância é $\sigma^2 = \frac{1}{12} \approx 0.0833$.
-    \item \textbf{Distribuição Exponencial ($Y \sim Exp(\lambda = 2)$):} Modelagem fortemente assimétrica à direita, com média teórica $\mu = \frac{1}{\lambda} = 0.5$ e variância $\sigma^2 = \frac{1}{\lambda^2} = 0.25$.
+    \item \textbf{Distribuição Uniforme ($X \sim U(0, 1)$):} Caracterizada por uma densidade constante no intervalo $[0, 1]$, onde a média teórica é $\mu = 0{,}5$ e a variância é $\sigma^2 = \frac{1}{12} \approx 0{,}0833$.
+    \item \textbf{Distribuição Exponencial ($Y \sim Exp(\lambda = 2)$):} Modelagem fortemente assimétrica à direita, com média teórica $\mu = \frac{1}{\lambda} = 0{,}5$ e variância $\sigma^2 = \frac{1}{\lambda^2} = 0{,}25$.
 \end{enumerate}
 
-O Teorema Central do Limite dita que, dada uma sequência de variáveis aleatórias i.i.d. com média $\mu$ e variância $\sigma^2$ finitas, a média amostral padronizada $Z$ converge em distribuição para uma Normal padrão à medida que $n \to \infty$:
+O Teorema Central do Limite dita que, dada uma sequência de variáveis aleatórias i.i.d. com média $\mu$ e variância $\sigma^2$ finitas, a média amostral padronizada $Z$ converge em distribuição para uma Normal padrão à medida que $n \to \infty$, conforme a Equação~\ref{eq:tcl} \cite{chan2021probability}.
 \begin{equation}
     Z = \frac{\bar{X}_n - \mu}{\sigma / \sqrt{n}} \xrightarrow{d} \mathcal{N}(0, 1)
+    \label{eq:tcl}
 \end{equation}
 
 \subsection{Resultados e Análise Crítica}
 
-Os impactos do tamanho amostral na convergência podem ser observados nas figuras geradas pelas simulações empíricas.
+Os impactos do tamanho amostral na convergência podem ser observados na Figura~\ref{fig:tcl_graficos}, gerada pelas simulações empíricas.
 
 \begin{figure}[H]
     \centering

@@ -1,18 +1,22 @@
 \section{Calculo de Esperança, Variância e Lei dos Grandes Números}
-Esta seção aborda a validação empírica dos conceitos de Esperança Matemática ($E[X]$) e Variância ($\Var(X)$), estendendo a análise para a verificação do fenômeno da estabilidade estatística ditado pela Lei dos Grandes Números (LGN).
+Esta seção aborda a validação empírica dos conceitos de Esperança Matemática ($E[X]$) e Variância ($\Var(X)$), estendendo a análise para a verificação do fenômeno da estabilidade estatística ditado pela Lei dos Grandes Números (LGN) \cite{chan2021probability}.
 
 \subsection{Definições Teóricas}
 
-A Lei dos Grandes Números garante que a média amostral de ensaios independentes converge para a média teórica populacional quando o número de ensaios tende ao infinito:
+A Lei dos Grandes Números garante que a média amostral de ensaios independentes converge para a média teórica populacional quando o número de ensaios tende ao infinito, conforme a Equação~\ref{eq:lgn} \cite{ross2010probabilidade}.
 \begin{equation}
     P\left( \lim_{k \to \infty} \bar{X}_k = \mu \right) = 1
+    \label{eq:lgn}
 \end{equation}
 
-Utilizou-se uma variável aleatória contínua $X \sim Exp(\lambda = 0.2)$. Os parâmetros teóricos de controle de longa duração são definidos matematicamente por:
-\begin{align}
-    E[X] &= \frac{1}{\lambda} = \frac{1}{0.2} = 5.0000 \\
-    \Var(X) &= \frac{1}{\lambda^2} = \frac{1}{0.04} = 25.0000
-\end{align}
+Utilizou-se uma variável aleatória contínua $X \sim Exp(\lambda = 0{,}2)$. Os parâmetros teóricos de controle de longa duração são definidos na Equação~\ref{eq:exp_momentos}.
+\begin{equation}
+\begin{aligned}
+    E[X] &= \frac{1}{\lambda} = \frac{1}{0{,}2} = 5{,}0000 \\
+    \Var(X) &= \frac{1}{\lambda^2} = \frac{1}{0{,}04} = 25{,}0000
+\end{aligned}
+\label{eq:exp_momentos}
+\end{equation}
 
 \subsection{Resultados e Análise Crítica}
 

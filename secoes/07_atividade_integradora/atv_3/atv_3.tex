@@ -23,7 +23,7 @@ A diferença bruta observada entre o grupo de tratamento e o grupo de controle f
 
 \subsubsection{Modelagem Frequentista e Teste de Hipóteses}
 
-Para determinar se o incremento de $4,00\%$ na taxa de conversão a favor do botão Verde possui significância estatística ou se decorre meramente de flutuações aleatórias do processo de amostragem, aplicou-se o teste Z de igualdade de duas proporções assintótico. O teste foi configurado de forma bicaudal, sem a correção de continuidade de Yates. As hipóteses estatísticas formalizadas são:
+Para determinar se o incremento de $4,00\%$ na taxa de conversão a favor do botão Verde possui significância estatística ou se decorre meramente de flutuações aleatórias do processo de amostragem, aplicou-se o teste Z de igualdade de duas proporções assintótico \cite{montgomery2018applied}. O teste foi configurado de forma bicaudal, sem a correção de continuidade de Yates. As hipóteses estatísticas formalizadas são:
 
 \begin{align*}
 	H_0: &P(B) - P(A) = 0 \quad \text{(A cor do botão não exerce efeito sobre a taxa de conversão)} \\
@@ -43,10 +43,11 @@ Considerando o nível de significância ($\alpha = 0,05$), a hipótese nula $H_0
 
 Com o intuito de verificar o modelo teórico paramétrico frente a uma abordagem empírica, estruturou-se uma Simulação de Monte Carlo fundamentada em $10.000$ experimentos sintéticos independentes sob as premissas estritas de $H_0$. Para tal fim, parametrizou-se uma taxa de conversão base e comum de $P(H0) = 10,00\%$ para ambas as distribuições.
 
-De acordo com o referencial teórico assintótico, a variância amostral da diferença entre duas proporções independentes sob a hipótese nula é governada pelo erro padrão teórico ($\sigma_{\text{teórico}}$), calculado por:
+De acordo com o referencial teórico assintótico, a variância amostral da diferença entre duas proporções independentes sob a hipótese nula é governada pelo erro padrão teórico ($\sigma_{\text{teórico}}$), calculado pela Equação~\ref{eq:sigma_teorico}.
 
 \begin{equation}
-	\sigma_{\text{teórico}} = \sqrt{P(H0) \cdot (1 - P(H0)) \cdot \left( \frac{1}{n_A} + \frac{1}{n_B} \right)} 
+	\sigma_{\text{teórico}} = \sqrt{P(H0) \cdot (1 - P(H0)) \cdot \left( \frac{1}{n_A} + \frac{1}{n_B} \right)}
+	\label{eq:sigma_teorico}
 \end{equation}
 
 Substituindo os parâmetros do estudo ($P(H0) = 0,10$ e $A_n = B_n = 2500$), obtém-se o desvio padrão teórico da distribuição amostral nula:
@@ -73,7 +74,7 @@ A convergência dos dados expressa na Figura~\ref{fig:teoria_vs_simulacao} permi
 
 \subsubsection{Implementação Computacional}
 
-\begin{lstlisting}[language=R, caption={}, label=]
+\begin{lstlisting}[language=R, caption={Teste A/B com teste Z de proporções e simulação de Monte Carlo.}, label={lst:teste_ab}]
 library(ggplot2)
 library(dplyr)
 set.seed(42)
