@@ -5,8 +5,6 @@
 
 \subsection{Axiomas de Kolmogorov}
 
-
-
 Para continuarmos nosso estudo precisamos definir um espaço de probabilidade, representado por três elementos: $(\Omega, \mathcal{F}, P)$. Nesse modelo, $\Omega$ é o espaço amostral , $\mathcal{F}$ representa os eventos que podemos calcular e $P$ é a própria medida de probabilidade. Os seguintes axiomas foram criadas por Andrey Kolmogorov em 1933 \cite{kolmogorov1933grundbegriffe}:
 
 
@@ -201,6 +199,11 @@ Se os dois sistemas são independentes, basta multiplicar as probabilidades:
 \subsection{Simulações em R}
 
 
+Para o processamento dos dados, análises estatísticas e geração de resultados, utilizou-se o ambiente de computação estatística R. Especificamente, o tratamento e a estruturação das bases de dados foram realizados com o auxílio dos pacotes \texttt{dplyr} e \texttt{tidyr}, que oferecem ferramentas otimizadas para a manipulação e limpeza de dados. 
+
+A elaboração das visualizações e gráficos de alta qualidade foi feita através do pacote \texttt{ggplot2}. Para a disposição e o arranjo de múltiplos gráficos em uma única figura ou painel, empregou-se o pacote \texttt{gridExtra}. Adicionalmente, o pacote \texttt{xtable} foi utilizado para a tabulação de estatísticas descritivas e saídas de modelos, permitindo a exportação automatizada e rigorosa das tabelas diretamente para o formato \LaTeX.
+
+Por fim, com o intuito de garantir a transparência e a total reprodutibilidade científica de todos os procedimentos que envolvem geração de números pseudoaleatórios (como amostragens ou simulações estatísticas), definiu-se uma semente inicial (\textit{seed}) fixa de valor $1234$, por meio da função \texttt{set.seed(1234)}.
 
 \subsubsection{Filtro Anti-Spam}
 
@@ -268,5 +271,604 @@ O valor predito positivo $P(S|F^+)$, ou seja, a chance do e-mail ser realemnte u
 
 O valor predito negativo $P(\neg S|F^-)$, ou seja, a chance do e-mail ser classificado como legitimo, sendo que ele é um spam, é de $98,63\%$, o que é adequado para um filtro de spam.
 
+
+O código-fonte utilizado para esta análise encontra-se disponível no Código \ref{cod filtro anti spam}.
+
+\begin{lstlisting}[language=R, caption={Filtro Anti-Spam.}, label=cod filtro anti spam]
+
+# ==================================================
+# Filtro Anti-Spam
+# ==================================================
+cat("\n========== SEÇÃO 1: FILTRO ANTI-SPAM ==========\n")
+
+# Definição dos eventos:
+# S: email é spam (S) ou não (N)
+# F: filtro classifica como spam (positivo) ou não (negativo)
+
+# Parâmetros iniciais:
+prev_spam <- 0.20     # Prevalência de spam
+sens_filtro <- 0.95   # Sensibilidade: P(F+|S)
+espec_filtro <- 0.90  # Especificidade: P(F-|N)
+
+# Simulação de 10000 emails
+n <- 10000
+spam_real <- rbinom(n, 1, prev_spam)
+
+# Aplicação do filtro (simulação condicional)
+# Se for spam, probabilidade de classificar como spam = sens_filtro
+# Se não for spam, probabilidade de classificar como spam = 1 - espec_filtro
+filtro_pos <- rep(NA, n)
+for (i in 1:n) {
+	if (spam_real[i] == 1) {
+		filtro_pos[i] <- rbinom(1, 1, sens_filtro)
+	} else {
+		filtro_pos[i] <- rbinom(1, 1, 1 - espec_filtro)
+	}
+}
+
+# Matriz de confusão
+confusion <- table(Real = ifelse(spam_real, "Spam", "Não Spam"),
+Filtro = ifelse(filtro_pos, "Spam", "Não Spam"))
+cat("Matriz de Confusão:\n")
+print(confusion)
+
+# exportar matriz de confusão para latex
+print(xtable(confusion, 
+caption = "Matriz de Confusão do Filtro de Spam", 
+label = "tab:matriz_confusao"), 
+type = "latex", 
+include.rownames = TRUE)
+
+
+# Probabilidade total de filtro positivo:
+P_F_pos <- prev_spam * sens_filtro + (1 - prev_spam) * (1 - espec_filtro)
+cat(sprintf("P(Filtro positivo) = %.4f\n", P_F_pos))
+
+# Teorema de Bayes: Valor Preditivo Positivo (VPP) e Negativo (VPN)
+VPP <- (prev_spam * sens_filtro) / P_F_pos
+VPN <- ((1 - prev_spam) * espec_filtro) / (1 - P_F_pos)
+cat(sprintf("VPP (P(Spam|F+)) = %.4f\n", VPP))
+cat(sprintf("VPN (P(Não Spam|F-)) = %.4f\n", VPN))
+
+# Gráfico: Barras da classificação real vs predita
+df1 <- data.frame(
+Real = c("Spam", "Não Spam"),
+Predito_Spam = c(confusion[1,2]/sum(confusion[1,]), confusion[2,2]/sum(confusion[2,])),
+Predito_NaoSpam = c(confusion[1,1]/sum(confusion[1,]), confusion[2,1]/sum(confusion[2,]))
+)
+df1_long <- pivot_longer(df1, cols = starts_with("Predito"),
+names_to = "Predito", values_to = "Proporcao")
+
+g1 <- ggplot(df1_long, aes(x = Real, y = Proporcao, fill = Predito)) +
+geom_bar(stat = "identity", position = "dodge") +
+labs(title = "Filtro Anti-Spam: Proporções de Classificação",
+y = "Proporção", fill = "Classificação do Filtro") +
+theme_minimal()
+print(g1)
+
+\end{lstlisting}
+
+
+
 \subsubsection{Sistema de Alarmes}
 
+A avaliação da confiabilidade de sistemas de segurança físicos exige a compreensão das variáveis que podem levar ao acionamento indevido ou à falha de detecção. O problema aqui modelado consiste em um sistema de alarme de segurança sujeito a dois eventos independentes: uma intrusão real e uma falha elétrica. 
+
+O objetivo é mensurar a confiabilidade do disparo do alarme, ou seja, determinar qual é a probabilidade de estar ocorrendo uma intrusão real dado que o alarme disparou. Esse cálculo é importante, pois falsos positivos geram custos operacionais e reduzem a confiança no sistema, enquanto falsos negativos comprometem a segurança.
+
+\begin{itemize}
+	\item $I$: Ocorrência de intrusão (onde $I^c$ representa a não intrusão).
+	\item $F$: Ocorrência de falha elétrica (onde $F^c$ representa a operação normal de energia).
+	\item $A$: Disparo do alarme.
+\end{itemize}
+
+Assumimos as seguintes probabilidades a priori:
+\begin{itemize}
+	\item Probabilidade de intrusão: $P(I) = 0.01$ (1\%)
+	\item Probabilidade de falha elétrica: $P(F) = 0.05$ (5\%)
+\end{itemize}
+
+
+O comportamento do alarme é estocástico e depende do estado de intrusão e de falha elétrica. As probabilidades condicionais de disparo do alarme ($A$) sob diferentes circunstâncias são:
+\begin{itemize}
+	\item $P(A|I, F) = 0.99$ (Disparo em caso de intrusão simultânea a uma falha).
+	\item $P(A|I, F^c) = 0.95$ (Disparo em caso de intrusão sem falha elétrica).
+	\item $P(A|I^c, F) = 0.10$ (Probabilidade de falso positivo induzido apenas pela falha elétrica).
+	\item $P(A|I^c, F^c) = 0.001$ (Falso positivo por motivos aleatórios).
+\end{itemize}
+
+
+Dado as probabilidades de intrusão e de falha elétrica, simulamos $10000$ situações hipotéticas, usando a distribuição binomial, assim gerando: 
+
+
+\begin{table}[ht]
+	\centering
+	\begin{tabular}{rrr}
+		\hline
+		& Intrusão & Não Intrusão \\ 
+		\hline
+		Intrusão &   6 &  85 \\ 
+		Não Intrusão & 475 & 9434 \\ 
+		\hline
+	\end{tabular}
+	\caption{Matriz de Confusão do Sistema de alarme} 
+	\label{tab:matriz_confusao_sistema_de_alarme}
+\end{table}
+
+
+
+Determinar a probabilidade do alarme disparar, $P(A)$, utilizando o Teorema da Probabilidade Total \ref{teorema_probabilidade_total}.
+
+\begin{align*}
+	P(A) = P(A|I,F) \cdot P(I) \cdot P(F) + P(A|I,F^c) \cdot P(I) \cdot P(F^c) + \\
+	 P(A|I^c,F) \cdot P(I^c) \cdot P(F) + P(A|I^c,F^c) \cdot P(I^c) \cdot P(F^c)
+\end{align*}
+
+
+Substituindo pelos parâmetros conhecidos:
+\begin{align*}
+	P(A) = (0.99 \cdot 0.01 \cdot 0.05) + (0.95 \cdot 0.01 \cdot 0.95)+ \\
+	 (0.10 \cdot 0.99 \cdot 0.05) + (0.001 \cdot 0.99 \cdot 0.95)
+\end{align*}
+\begin{align*}
+	P(A) \approx 0.0154 \quad (1.54\%)
+\end{align*}
+
+
+Para encontrar a probabilidade de ter ocorrido uma intrusão dado que o alarme tocou, $P(I|A)$, precisamos primeiro da probabilidade de o alarme tocar dado que houve uma intrusão, $P(A|I)$. Aplicando novamente a probabilidade total \ref{teorema_probabilidade_total} sobre as condições de falha:
+
+\begin{align*}
+	P(A|I) = P(A|I,F) \cdot P(F) + P(A|I,F^c) \cdot P(F^c)
+\end{align*}
+\begin{align*}
+	P(A|I) = (0.99 \cdot 0.05) + (0.95 \cdot 0.95) = 0.9520
+\end{align*}
+
+Aplicando o Teorema de Bayes \ref{Teorema_bayes}:
+\begin{align*}
+	P(I|A) = \frac{P(I) \times P(A|I)}{P(A)}
+\end{align*}
+\begin{align*}
+	P(I|A) = \frac{0.01 \times 0.9520}{0.0154} \approx 0.6178 \quad (61.2\%)
+\end{align*}
+
+
+Os resultados indicam que, apesar da alta taxa de acerto do alarme em condições de intrusão $95.2\%$, a baixa probabilidade prévia do evento de intrusão aliada à influência das falhas elétricas faz com que a confiabilidade posterior seja moderada. Em termos práticos, interpreta-se que, quando o alarme dispara, a probabilidade real de haver uma intrusão no local é de $61.8\%$. Os $38.2\%$ restantes representam alarmes falsos, sendo predominantemente impulsionados pelas falhas elétricas na rede.
+
+
+O código-fonte utilizado para esta análise encontra-se disponível no Código \ref{cod sistema de alarme}.
+
+\begin{lstlisting}[language=R, caption={Sistema de alarme.}, label=cod sistema de alarme]
+# ==================================================
+# Sistema de Alarme
+# ==================================================
+cat("========== SEÇÃO 2: SISTEMA DE ALARMES ==========\n")
+
+# Definição dos eventos:
+# I: intrusão (I) ou não (NI)
+# F: falha elétrica (F) ou não (NF)
+# A: alarme dispara (A) ou não (NA)
+
+# Parâmetros:
+P_I <- 0.01    # Probabilidade de intrusão
+P_F <- 0.05    # Probabilidade de falha elétrica
+
+# Probabilidades condicionais do alarme:
+# P(A|I, F) = 0.99 (quase certo disparar se ambos)
+# P(A|I, NF) = 0.95
+# P(A|NI, F) = 0.10 (falso positivo por falha)
+# P(A|NI, NF) = 0.001 (falso positivo raro)
+
+# Simulação de 10000 situações
+n2 <- 10000
+intrusao <- rbinom(n2, 1, P_I)
+falha <- rbinom(n2, 1, P_F)
+
+alarme <- rep(NA, n2)
+for (i in 1:n2) {
+	if (intrusao[i]==1 & falha[i]==1) {
+		alarme[i] <- rbinom(1,1,0.99)
+	} else if (intrusao[i]==1 & falha[i]==0) {
+		alarme[i] <- rbinom(1,1,0.95)
+	} else if (intrusao[i]==0 & falha[i]==1) {
+		alarme[i] <- rbinom(1,1,0.10)
+	} else {
+		alarme[i] <- rbinom(1,1,0.001)
+	}
+}
+
+# Matriz de confusão
+confusion <- table(Real = ifelse(intrusao, "Intrusão", "Não Intrusão"),
+Filtro = ifelse(falha, "Intrusão", "Não Intrusão"))
+cat("Matriz de Confusão:\n")
+print(confusion)
+
+
+# exportar matriz de confusão para latex
+print(xtable(confusion, 
+caption = "Matriz de Confusão do Sistema de alarme", 
+label = "tab:matriz_confusao_sistema_de_alarme"), 
+type = "latex", 
+include.rownames = TRUE)
+
+
+# Probabilidade total do alarme:
+P_A <- P_I*P_F*0.99 + P_I*(1-P_F)*0.95 + (1-P_I)*P_F*0.10 + (1-P_I)*(1-P_F)*0.001
+cat(sprintf("P(Alarme) = %.4f\n", P_A))
+
+# Teorema de Bayes: P(I|A) - probabilidade de intrusão dado alarme
+# Precisamos de P(A|I) = P(A|I,F)*P(F) + P(A|I,NF)*P(NF) (teorema da probabilidade total)
+P_A_dado_I <- 0.99*P_F + 0.95*(1-P_F)
+cat(sprintf("P(Alarme|Intrusao) = %.4f\n", P_A_dado_I))
+
+P_I_dado_A <- (P_I * P_A_dado_I) / P_A
+cat(sprintf("P(Intrusao|Alarme) = %.4f\n", P_I_dado_A))
+
+# Interpretação:
+cat(sprintf("Interpretação: Quando o alarme dispara, a probabilidade de intrusão é %.1f%%.\n", P_I_dado_A*100))
+
+# Gráfico: Probabilidades conjuntas (diagrama de árvore simplificado) - heatmap
+# Vamos mostrar P(Intrusao, Falha, Alarme) via simulação
+df2 <- data.frame(
+Intrusao = ifelse(intrusao, "Sim", "Não"),
+Falha = ifelse(falha, "Sim", "Não"),
+Alarme = ifelse(alarme, "Sim", "Não")
+)
+df2_sum <- df2 %>%
+group_by(Intrusao, Falha, Alarme) %>%
+summarise(Contagem = n(), .groups = "drop") %>%
+mutate(Prob = Contagem / n2)
+
+g2 <- ggplot(df2_sum, aes(x = Intrusao, y = Falha, fill = Prob)) +
+geom_tile() +
+facet_wrap(~Alarme) +
+scale_fill_gradient(low = "white", high = "steelblue") +
+labs(title = "Probabilidades Conjuntas (Intrusão, Falha, Alarme)",
+fill = "Probabilidade") +
+theme_minimal()
+print(g2)
+
+\end{lstlisting}
+
+
+
+\subsection{Análise do Classificador Probabilístico Naive Bayes}
+
+Nesta seção, avaliamos o desempenho e o comportamento do espaço de decisão de um classificador probabilístico Bayesiano Ingênuo (\textit{Naive Bayes}). O modelo foi treinado com um conjunto de dados simulado contendo 500 amostras, distribuídas em três classes ($C_1$, $C_2$ e $C_3$) e caracterizadas por dois atributos contínuos ($X_1$ e $X_2$). 
+
+As probabilidades a priori das classes foram definidas empíricamente como $P(C_1) = 0.3$, $P(C_2) = 0.5$ e $P(C_3) = 0.2$. O modelo assume que, dado a classe, os atributos são condicionalmente independentes e seguem distribuições normais bivariadas. A probabilidade a posteriori para a classificação de um novo vetor de características $\mathbf{x} = (x_1, x_2)$ é dada pela regra de Bayes:
+
+\begin{align*}
+	P(C_k \mid x_1, x_2) = \frac{P(C_k) \cdot f(x_1 \mid C_k) \cdot f(x_2 \mid C_k)}{\sum_{j=1}^{3} P(C_j) \cdot f(x_1 \mid C_j) \cdot f(x_2 \mid C_j)}
+\end{align*}
+
+Onde $f(x_i \mid C_k)$ representa a função de densidade de probabilidade normal para o atributo $i$ na classe $k$.
+
+
+Para validar a capacidade preditiva do modelo, submeteu-se a instância arbitrária localizada nas coordenadas $(2.0, 1.0)$ ao classificador. Utilizando os parâmetros extraídos do treinamento, o algoritmo calculou as seguintes probabilidades a posteriori normalizadas:
+
+\begin{itemize}
+	\item $P(C_1 \mid \mathbf{x}) \approx 0.229$ ($22,9\%$)
+	\item $P(C_2 \mid \mathbf{x}) \approx 0.745$ ($74,5\%$)
+	\item $P(C_3 \mid \mathbf{x}) \approx 0.026$ ($2,6\%$)
+\end{itemize}
+
+Aplicando a regra de decisão \textit{Maximum A Posteriori} (MAP), o modelo atribui a instância à classe que maximiza a probabilidade. Conforme demonstrado pelos resultados, o ponto $(2.0, 1.0)$ foi corretamente predito como pertencente à classe \textbf{$C_2$}, evidenciando forte confiança na predição em virtude da alta margem probabilística em relação às demais classes.
+
+
+Para uma compreensão espacial de como o algoritmo discrimina as classes, o espaço amostral foi mapeado por meio de uma grade (\textit{grid}) de coordenadas. A Figura \ref{fig:fronteiras_bayes} ilustra o diagrama de dispersão das amostras sobreposto às regiões de decisão do classificador probabilístico.
+
+\begin{figure}[htbp]
+	\centering
+	% Substitua 'fronteiras_bayes.png' pelo nome e caminho do arquivo salvo no R
+	\includegraphics[width=0.85\textwidth]{secoes/06_Probabilidade_condicional/imagens/Classificacao_bayes_ingenuo.png}
+	\caption{Dispersão dos dados simulados e mapeamento das fronteiras de decisão geradas pelo classificador Naive Bayes. As áreas sombreadas representam as regiões preditas para cada classe.}
+	\label{fig:fronteiras_bayes}
+\end{figure}
+
+Observa-se na Figura \ref{fig:fronteiras_bayes} que o modelo Naive Bayes, apesar de sua premissa de independência, é capaz de traçar fronteiras de decisão suaves e contínuas entre as distribuições. As linhas pretas demarcam os limiares exatos onde a probabilidade dominante transita entre duas classes, confirmando graficamente a dominância espacial da classe $C_2$ na região central, em concordância com o teste numérico realizado no ponto $(2.0, 1.0)$.
+
+O código-fonte utilizado para esta análise encontra-se disponível no Código \ref{cod cassificador_bayes}.
+
+\begin{lstlisting}[language=R, caption={Classificador Naive Bayes.}, label=cod cassificador_bayes]
+
+cat("========== CLASSIFICAÇÃO PROBABILÍSTICA ==========\n")
+
+# Parâmetros: Médias e desvios para cada classe (atributos X1 e X2)
+classes <- c("C1", "C2", "C3")
+prior <- c(0.3, 0.5, 0.2)  # Probabilidades a priori
+
+# Parâmetros das distribuições condicionais (assumindo normal)
+mu <- matrix(c(0, 0,  # C1: X1, X2
+3, 2,  # C2: X1, X2
+5, -1), nrow=3, byrow=TRUE)  # C3: X1, X2
+sigma <- matrix(c(1.5, 1.5, 1.5, 1.5, 1.5, 1.5), nrow=3, byrow=TRUE)  # desvios padrão
+
+# Simular 500 pontos de treinamento
+n_train <- 500
+classes_verdade <- sample(classes, n_train, replace = TRUE, prob = prior)
+X1 <- rep(NA, n_train)
+X2 <- rep(NA, n_train)
+for (i in 1:n_train) {
+	idx <- which(classes == classes_verdade[i])
+	X1[i] <- rnorm(1, mu[idx,1], sigma[idx,1])
+	X2[i] <- rnorm(1, mu[idx,2], sigma[idx,2])
+}
+dados <- data.frame(Classe = classes_verdade, X1, X2)
+
+# Função de densidade normal
+dnorm2d <- function(x1, x2, mu1, mu2, s1, s2) {
+	exp(-0.5*(((x1-mu1)/s1)^2 + ((x2-mu2)/s2)^2)) / (2*pi*s1*s2)
+}
+
+# Classificar um novo ponto
+novo <- c(2, 1)  # (X1, X2)
+post_probs <- rep(NA, 3)
+for (k in 1:3) {
+	likelihood <- dnorm2d(novo[1], novo[2], mu[k,1], mu[k,2], sigma[k,1], sigma[k,2])
+	post_probs[k] <- prior[k] * likelihood
+}
+post_probs <- post_probs / sum(post_probs)
+
+cat(sprintf("Ponto (%.1f, %.1f) - Probabilidades Posteriores:\n", novo[1], novo[2]))
+for (k in 1:3) {
+	cat(sprintf("  %s: %.3f\n", classes[k], post_probs[k]))
+}
+cat(sprintf("Classe predita: %s\n", classes[which.max(post_probs)]))
+
+# Criar grid de pontos
+x1_range <- seq(min(X1)-1, max(X1)+1, length.out = 100)
+x2_range <- seq(min(X2)-1, max(X2)+1, length.out = 100)
+grid <- expand.grid(X1 = x1_range, X2 = x2_range)
+
+# Calcular probabilidades para cada ponto do grid
+grid_pred <- matrix(NA, nrow = nrow(grid), ncol = 3)
+for (i in 1:nrow(grid)) {
+	for (k in 1:3) {
+		grid_pred[i,k] <- prior[k] * dnorm2d(grid$X1[i], grid$X2[i], mu[k,1], mu[k,2], sigma[k,1], sigma[k,2])
+	}
+	grid_pred[i,] <- grid_pred[i,] / sum(grid_pred[i,])
+}
+grid$Classe <- classes[apply(grid_pred, 1, which.max)]
+grid$Prob <- apply(grid_pred, 1, max)
+
+
+g3 <- ggplot() +
+geom_tile(data = grid, aes(x = X1, y = X2, fill = Classe), alpha = 0.3) +
+geom_contour(data = grid, aes(x = X1, y = X2, z = as.numeric(factor(Classe))), 
+breaks = c(1.5, 2.5), color = "black", alpha = 0.5, inherit.aes = FALSE) +
+geom_point(data = dados, aes(x = X1, y = X2, color = Classe), size = 2) +
+labs(title = "Classificação Bayes Ingênuo com Fronteiras",
+x = "Atributo X1",
+y = "Atributo X2",
+fill = "Região Predita",
+color = "Classe Real") +
+theme_minimal()
+
+print(g3)
+
+\end{lstlisting}
+
+
+
+
+\subsection{Autenticação Biométrica}
+\label{subsec:analise_biometrica}
+
+A avaliação da eficácia e da confiabilidade de sistemas de autenticação biométrica fundamenta-se no estudo do comportamento das taxas de erro diante da variação do limiar operacional de decisão ($t$). As duas métricas primordiais para essa análise são a Taxa de Falsa Aceitação (\textit{False Acceptance Rate} -- FAR), que mensura a probabilidade de o sistema classificar incorretamente um impostor como usuário legítimo, e a Taxa de Falsa Rejeição (\textit{False Rejection Rate} -- FRR), que indica a probabilidade de um usuário legítimo ser indevidamente bloqueado.
+
+Nesta seção, analisa-se o desempenho de um modelo biométrico simulado em ambiente computacional R, cujos escores de correspondência (\textit{matching scores}) revelam o comportamento do sistema sob condições controladas de separabilidade de classes.
+
+
+A simulação considerou duas populações estatísticas independentes, contendo $n = 1000$ amostras cada, representando os escores de similaridade atribuídos a tentativas de acesso de usuários genuínos e de indivíduos impostores. Os escores foram modelados a partir de distribuições normais com os seguintes parâmetros operacionais:
+
+\begin{itemize}
+	\item \textbf{Escores Genuínos ($S_{\text{gen}}$):} $\mathcal{N}(\mu_{\text{gen}} = 0{,}9; \,\sigma_{\text{gen}} = 0{,}1)$
+	\item \textbf{Escores Impostores ($S_{\text{imp}}$):} $\mathcal{N}(\mu_{\text{imp}} = 0{,}2; \,\sigma_{\text{imp}} = 0{,}1)$
+\end{itemize}
+
+O limiar de decisão $t$ foi avaliado de forma incremental ao longo do intervalo discreto $[0, 1]$ com passo de $0{,}01$. Para cada valor de $t$, as taxas FAR e FRR foram computadas de forma empírica através das seguintes relações de probabilidade:
+
+\begin{align*}
+	\text{FAR}(t) = P(S_{\text{imp}} > t) = \frac{1}{n}\sum_{i=1}^{n} \mathbb{I}(S_{\text{imp}, i} > t)
+\end{align*}
+
+\begin{align*}
+	\text{FRR}(t) = P(S_{\text{gen}} \le t) = \frac{1}{n}\sum_{i=1}^{n} \mathbb{I}(S_{\text{gen}, i} \le t)
+\end{align*}
+
+Onde $\mathbb{I}(\cdot)$ representa a função indicadora, que assume valor 1 se a condição for verdadeira e 0 caso contrário.
+
+O comportamento empírico observado na saída dos dados demonstra o trade-off clássico de sistemas classificadores lineares. A variação de $t$ acarreta deslocamentos inversamente proporcionais entre as taxas de erro:
+\begin{itemize}
+	\item \textbf{Caso de Baixo Limiar ($t \to 0$):} O critério de aceitação torna-se excessivamente permissivo. Como consequência, a FAR atinge seu patamar máximo ($\text{FAR} \approx 1{,}0$), permitindo o acesso de quase todos os impostores, ao passo que a FRR é minimizada ($\text{FRR} \approx 0{,}0$).
+	\item \textbf{Caso de Alto Limiar ($t \to 1$):} O sistema torna-se estrito e altamente seguro. A FAR decai para $0{,}0$, inviabilizando fraudes, porém a taxa de rejeição de usuários legítimos (FRR) eleva-se drasticamente para próximo de $1{,}0$.
+\end{itemize}
+
+O ponto ótimo de operação é balizado pela \textit{Equal Error Rate} (EER) --- a Taxa de Erro Igualitário --- configurada no ponto de intersecção onde $\text{FAR}(t) = \text{FRR}(t)$. De acordo com o algoritmo de minimização aplicado sobre os resultados simulados, obteve-se:
+\begin{itemize}
+	\item \textbf{Limiar Ótimo Recomendado ($t$):} $0{,}52$
+	\item \textbf{EER Aproximado:} $0$ ($0\%$)
+\end{itemize}
+
+A obtenção de uma EER nula, neste experimento decorre da completa separabilidade entre as funções de densidade de probabilidade geradas. Analisando, a distância entre as médias das distribuições é dada por $\Delta\mu = \mu_{\text{gen}} - \mu_{\text{imp}} = 0{,}9 - 0{,}2 = 0{,}7$. Dado que o desvio padrão de ambas as curvas é $\sigma = 0{,}1$, a distância correspondente entre os picos equivale a $7\sigma$.
+
+A dinâmica de cruzamento das taxas descritas e o comportamento das curvas frente ao limiar calculado estão ilustrados na Figura~\ref{fig:curva_far_frr}.
+
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.85\textwidth]{secoes/06_Probabilidade_condicional/imagens/curvas_far_e_frr_vs_limiar.png}
+	\caption{Curvas de variação das taxas FAR e FRR em função do limiar de decisão. A linha vertical tracejada demarca o ponto de equilíbrio operacional (EER) obtido em $t = 0{,}52$.}
+	\label{fig:curva_far_frr}
+\end{figure}
+
+
+O código-fonte utilizado para esta análise encontra-se disponível no Código \ref{cod autenticacao biometrica}.
+
+\begin{lstlisting}[language=R, caption={Autenticação Biométrica.}, label=cod autenticacao biometrica]
+	
+n_genuino <- 1000
+n_impostor <- 1000
+
+scores_genuino <- rnorm(n_genuino, mean = 0.9, sd = 0.1)
+scores_impostor <- rnorm(n_impostor, mean = 0.2, sd = 0.1)
+
+# Limiares
+limiares <- seq(0, 1, by = 0.01)
+
+FAR <- rep(NA, length(limiares))
+FRR <- rep(NA, length(limiares))
+for (i in seq_along(limiares)) {
+	t <- limiares[i]
+	# FAR: impostores classificados como genuínos (score > t)
+	FAR[i] <- mean(scores_impostor > t)
+	# FRR: genuínos classificados como impostores (score <= t)
+	FRR[i] <- mean(scores_genuino <= t)
+}
+
+# Cálculo da EER (Equal Error Rate) aproximado
+idx_eer <- which.min(abs(FAR - FRR))
+EER <- mean(c(FAR[idx_eer], FRR[idx_eer]))
+cat(sprintf("EER (Equal Error Rate) aproximado: %.4f\n", EER))
+
+# Gráfico: Curva ROC e trade-off FAR vs FRR
+df4 <- data.frame(Limiar = limiares, FAR, FRR)
+df4_long <- pivot_longer(df4, cols = c(FAR, FRR), names_to = "Taxa", values_to = "Valor")
+
+g4 <- ggplot(df4_long, aes(x = Limiar, y = Valor, color = Taxa)) +
+geom_line(size = 1) +
+geom_vline(xintercept = limiares[idx_eer], linetype = "dashed", alpha = 0.5) +
+labs(title = "Curvas FAR e FRR vs Limiar",
+y = "Taxa") +
+theme_minimal()
+print(g4)
+
+\end{lstlisting}
+
+
+\subsection{Diagnóstico Médico}
+
+Nesta sessão, abordamos a avaliação do desempenho de testes diagnósticos sob a ótica da epidemiologia quantitativa.
+
+Para ilustrar este comportamento, analisamos um teste diagnóstico configurado com os seguintes parâmetros fixos:
+\begin{itemize}
+	\item \textbf{Sensibilidade ($S$):} $99\%$, representando a probabilidade de o teste resultar positivo dado que o indivíduo possui a patologia.
+	\item \textbf{Especificidade ($E$):} $95\%$, que indica a probabilidade de o teste resultar negativo dado que o indivíduo é saudável.
+\end{itemize}
+
+O comportamento do Valor Preditivo Positivo (VPP) e do Valor Preditivo Negativo (VPN) foi avaliado variando-se a prevalência da doença ($\phi$) em cinco cenários distintos: $1\%$, $5\%$, $10\%$, $20\%$ e $50\%$.
+
+
+Com base no Teorema de Bayes \ref{Teorema_bayes}, a probabilidade pós-teste de um indivíduo estar verdadeiramente enfermo após um resultado positivo (VPP), ou de estar perfeitamente saudável após um resultado negativo (VPN), é expressa formalmente pelas seguintes equações:
+
+\begin{align*}
+	VPP = \frac{\phi \cdot S}{\phi \cdot S + (1 - \phi) \cdot (1 - E)}
+\end{align*}
+
+\begin{align*}
+	VPN = \frac{(1 - \phi) \cdot E}{(1 - \phi) \cdot E + \phi \cdot (1 - S)}
+\end{align*}
+
+Para compreender a dinâmica das probabilidades, realizou-se uma simulação estocástica baseada em ensaios de Bernoulli, para uma amostra teórica de $N = 10.000$ indivíduos, considerando um cenário com prevalência moderada de $10\%$ ($\phi = 0{,}10$). A matriz de confusão resultante da simulação é apresentada na Tabela~\ref{tab:matriz_confusao}.
+
+\begin{table}[ht]
+	\centering
+	\begin{tabular}{rrr}
+		\hline
+		& Negativo & Positivo \\ 
+		\hline
+		Não & 8576 & 438 \\ 
+		Sim &  11 & 975 \\ 
+		\hline
+		Total & 8587 & 1413 \\
+		\hline
+	\end{tabular}
+	\caption{Matriz de Confusão Teste Diágnostico} 
+	\label{tab:matriz_confusao_teste_diagnostico}
+\end{table}
+
+A partir dos dados absolutos obtidos na simulação, extraem-se as métricas empíricas de diagnóstico para este cenário específico de prevalência a $10\%$:
+\begin{itemize}
+	\item \textbf{VPP Empírico:} $\frac{975}{1.413} \approx 69\%$. Isto demonstra que, mesmo utilizando um teste com sensibilidade de ($99\%$), cerca de $31\%$ dos indivíduos que receberam um resultado positivo são, na realidade, falsos positivos decorrentes dos $5\%$ de erro de especificidade sobre a grande massa de indivíduos saudáveis.
+	\item \textbf{VPN Empírico:} $\frac{8.576}{8.587} \approx 99{,}87\%$. O teste demonstra uma segurança elevada para descartar a doença, gerando $11$ falsos negativos.
+\end{itemize}
+
+
+O comportamento dinâmico dos valores preditivos em todo o espectro de prevalências analisado pelo modelo pode ser visualizado no gráfico estatístico posicionado a seguir.
+
+
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.85\textwidth]{secoes/06_Probabilidade_condicional/imagens/VPP_VPN.png}
+	\caption{Curvas correspondentes ao Valor Preditivo Positivo (VPP) e Valor Preditivo Negativo (VPN) em função da variação da Prevalência ($\phi$).}
+	\label{fig:VPP_VPN}
+\end{figure}
+
+
+A análise conjunta dos cenários revela um comportamento para a prática clínica e tomada de decisão em saúde: o VPP é uma função estritamente crescente da prevalência, ao passo que o VPN comporta-se de maneira inversamente proporcional. O impacto da taxa de falsos positivos (aqui, $5\%$) é amplificado pela maioria de indivíduos saudáveis. Como resultado, os falsos positivos superam os verdadeiros positivos, derrubando o VPP para cerca de $16{,}7\%$.
+
+
+O código-fonte utilizado para esta análise encontra-se disponível no Código \ref{cod testes diagnosticos}.
+
+\begin{lstlisting}[language=R, caption={Testes Diagnósticos.}, label=cod testes diagnosticos]
+sens_teste <- 0.99  # Sensibilidade
+espec_teste <- 0.95 # Especificidade
+
+# Cenários de prevalência
+prev <- c(0.01, 0.05, 0.10, 0.20, 0.50)
+
+VPP_calc <- function(prev, sens, esp) {
+	P_pos <- prev * sens + (1 - prev) * (1 - esp)
+	VPP <- (prev * sens) / P_pos
+	return(VPP)
+}
+VPN_calc <- function(prev, sens, esp) {
+	P_neg <- prev * (1 - sens) + (1 - prev) * esp
+	VPN <- ((1 - prev) * esp) / P_neg
+	return(VPN)
+}
+
+vpps <- sapply(prev, VPP_calc, sens = sens_teste, esp = espec_teste)
+vpns <- sapply(prev, VPN_calc, sens = sens_teste, esp = espec_teste)
+
+# Simulação para um cenário específico (prevalência = 0.10)
+n5 <- 10000
+prev5 <- 0.10
+doenca <- rbinom(n5, 1, prev5)
+teste <- rep(NA, n5)
+for (i in 1:n5) {
+	if (doenca[i] == 1) {
+		teste[i] <- rbinom(1, 1, sens_teste)
+	} else {
+		teste[i] <- rbinom(1, 1, 1 - espec_teste)
+	}
+}
+# Matriz de confusão
+conf5 <- table(Doença = ifelse(doenca, "Sim", "Não"),
+Teste = ifelse(teste, "Positivo", "Negativo"))
+cat("Matriz de Confusão (Prevalência 10%):\n")
+print(conf5)
+
+# exportar matriz de confusão para latex
+print(xtable(conf5, 
+caption = "Matriz de Confusão Teste Diágnostico", 
+label = "tab:matriz_confusao_teste_diagnostico"), 
+type = "latex", 
+include.rownames = TRUE)
+
+
+# Gráfico: VPP e VPN vs Prevalência
+df5 <- data.frame(Prevalencia = prev, VPP = vpps, VPN = vpns)
+df5_long <- pivot_longer(df5, cols = c(VPP, VPN), names_to = "Medida", values_to = "Valor")
+
+g5 <- ggplot(df5_long, aes(x = Prevalencia, y = Valor, color = Medida)) +
+geom_line(size = 1) +
+geom_point(size = 2) +
+labs(title = "VPP e VPN em função da Prevalência",
+y = "Probabilidade") +
+theme_minimal()
+print(g5)
+	
+\end{lstlisting}
