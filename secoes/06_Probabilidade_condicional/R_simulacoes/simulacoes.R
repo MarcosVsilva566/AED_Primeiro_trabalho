@@ -1,7 +1,6 @@
 
 # --- Carregamento de Pacotes ---
 
-
 library(ggplot2)
 library(dplyr)
 library(tidyr)
@@ -174,12 +173,9 @@ print(g2)
 cat("\n==================================================\n")
 
 # ==================================================
-# SEÇÃO 3: Classificação Probabilística (Naive Bayes)
+# Classificação Probabilística (Naive Bayes)
 # ==================================================
-cat("========== SEÇÃO 3: CLASSIFICAÇÃO PROBABILÍSTICA ==========\n")
-
-# Objetivo: Implementar um classificador Bayes ingênuo simples
-# com 3 classes e 2 atributos contínuos simulados.
+cat("========== CLASSIFICAÇÃO PROBABILÍSTICA ==========\n")
 
 # Parâmetros: Médias e desvios para cada classe (atributos X1 e X2)
 classes <- c("C1", "C2", "C3")
@@ -208,7 +204,7 @@ dnorm2d <- function(x1, x2, mu1, mu2, s1, s2) {
   exp(-0.5*(((x1-mu1)/s1)^2 + ((x2-mu2)/s2)^2)) / (2*pi*s1*s2)
 }
 
-# Classificar um novo ponto (exemplo)
+# Classificar um novo ponto
 novo <- c(2, 1)  # (X1, X2)
 post_probs <- rep(NA, 3)
 for (k in 1:3) {
@@ -216,13 +212,13 @@ for (k in 1:3) {
   post_probs[k] <- prior[k] * likelihood
 }
 post_probs <- post_probs / sum(post_probs)
+
 cat(sprintf("Ponto (%.1f, %.1f) - Probabilidades Posteriores:\n", novo[1], novo[2]))
 for (k in 1:3) {
   cat(sprintf("  %s: %.3f\n", classes[k], post_probs[k]))
 }
 cat(sprintf("Classe predita: %s\n", classes[which.max(post_probs)]))
 
-# Gráfico: Dispersão dos dados com fronteiras de decisão (usando grid)
 # Criar grid de pontos
 x1_range <- seq(min(X1)-1, max(X1)+1, length.out = 100)
 x2_range <- seq(min(X2)-1, max(X2)+1, length.out = 100)
@@ -239,26 +235,28 @@ for (i in 1:nrow(grid)) {
 grid$Classe <- classes[apply(grid_pred, 1, which.max)]
 grid$Prob <- apply(grid_pred, 1, max)
 
-g3 <- ggplot(dados, aes(x = X1, y = X2, color = Classe)) +
-  geom_point(size = 2) +
-  geom_contour(data = grid, aes(z = Prob), bins = 1, color = "black", alpha = 0.5) +
-  labs(title = "Classificação Bayes Ingênuo com Fronteiras") +
+
+g3 <- ggplot() +
+  geom_tile(data = grid, aes(x = X1, y = X2, fill = Classe), alpha = 0.3) +
+  geom_contour(data = grid, aes(x = X1, y = X2, z = as.numeric(factor(Classe))), 
+               breaks = c(1.5, 2.5), color = "black", alpha = 0.5, inherit.aes = FALSE) +
+  geom_point(data = dados, aes(x = X1, y = X2, color = Classe), size = 2) +
+  labs(title = "Classificação Bayes Ingênuo com Fronteiras",
+       x = "Atributo X1",
+       y = "Atributo X2",
+       fill = "Região Predita",
+       color = "Classe Real") +
   theme_minimal()
+
 print(g3)
 
 cat("\n==================================================\n")
 
-# ==================================================
-# SEÇÃO 4: Autenticação Biométrica
-# ==================================================
-cat("========== SEÇÃO 4: AUTENTICAÇÃO BIOMÉTRICA ==========\n")
 
-# Objetivo: Analisar taxas de FAR e FRR em um sistema biométrico,
-# variando o limiar de decisão.
-
-# Parâmetros: scores genuínos e impostores simulados
-# Genuínos: distribuição normal com média 0.9 e desvio 0.1
-# Impostores: distribuição normal com média 0.2 e desvio 0.1
+# ==================================================
+# Autenticação Biométrica
+# ==================================================
+cat("========== AUTENTICAÇÃO BIOMÉTRICA ==========\n")
 
 n_genuino <- 1000
 n_impostor <- 1000
@@ -296,19 +294,14 @@ g4 <- ggplot(df4_long, aes(x = Limiar, y = Valor, color = Taxa)) +
   theme_minimal()
 print(g4)
 
-# Interpretação:
-cat(sprintf("Interpretação: Com limiar ótimo em %.2f, FAR = FRR = %.4f.\n", limiares[idx_eer], EER))
-
 cat("\n==================================================\n")
 
 # ==================================================
-# SEÇÃO 5: Diagnóstico Médico
+# Diagnóstico Médico
 # ==================================================
-cat("========== SEÇÃO 5: DIAGNÓSTICO MÉDICO ==========\n")
+cat("========== DIAGNÓSTICO MÉDICO ==========\n")
 
-# Objetivo: Comparar VPP e VPN para diferentes prevalências de doença.
 
-# Parâmetros do teste:
 sens_teste <- 0.99  # Sensibilidade
 espec_teste <- 0.95 # Especificidade
 
@@ -347,6 +340,14 @@ conf5 <- table(Doença = ifelse(doenca, "Sim", "Não"),
 cat("Matriz de Confusão (Prevalência 10%):\n")
 print(conf5)
 
+# exportar matriz de confusão para latex
+print(xtable(conf5, 
+             caption = "Matriz de Confusão Teste Diágnostico", 
+             label = "tab:matriz_confusao_teste_diagnostico"), 
+      type = "latex", 
+      include.rownames = TRUE)
+
+
 # Gráfico: VPP e VPN vs Prevalência
 df5 <- data.frame(Prevalencia = prev, VPP = vpps, VPN = vpns)
 df5_long <- pivot_longer(df5, cols = c(VPP, VPN), names_to = "Medida", values_to = "Valor")
@@ -359,36 +360,6 @@ g5 <- ggplot(df5_long, aes(x = Prevalencia, y = Valor, color = Medida)) +
   theme_minimal()
 print(g5)
 
-# Interpretação:
-cat("Interpretação: O VPP aumenta com a prevalência; o VPN diminui.\n")
-cat("Para doenças raras, mesmo testes com alta especificidade geram muitos falsos positivos.\n")
 
-# ==================================================
-# RESUMO DOS RESULTADOS
-# ==================================================
-cat("\n========== RESUMO DOS EXPERIMENTOS ==========\n")
-cat("1. Filtro Anti-Spam: VPP = ", round(VPP,4), ", VPN = ", round(VPN,4), "\n")
-cat("2. Sistema de Alarmes: P(Intrusão|Alarme) = ", round(P_I_dado_A,4), "\n")
-cat("3. Classificação: Probabilidades posteriores para ponto (2,1): ", round(post_probs,3), "\n")
-cat("4. Biometria: EER = ", round(EER,4), "\n")
-cat("5. Diagnóstico Médico (prev=10%): VPP = ", round(vpps[3],4), ", VPN = ", round(vpns[3],4), "\n")
-cat("\n==================================================\n")
 
-# ==================================================
-# COMO RELATAR NO TRABALHO (comentários)
-# ==================================================
-# Comentários para o aluno:
-# 1. Descreva a metodologia utilizada em cada simulação, incluindo
-#    as definições dos eventos, distribuições de probabilidade e
-#    os parâmetros escolhidos.
-# 2. Justifique a escolha dos parâmetros com base em situações
-#    realistas (ex.: prevalência de spam entre 10-30%).
-# 3. Apresente os resultados numéricos (probabilidades calculadas)
-#    e os gráficos, explicando o que cada um representa.
-# 4. Compare os cenários (ex.: diferentes prevalências no diagnóstico)
-#    e discuta as limitações do modelo (ex.: independência condicional
-#    no Naive Bayes).
-# 5. Inclua uma seção de conclusão com os principais aprendizados
-#    sobre o uso do Teorema de Bayes em situações práticas.
-# 6. Referencie este script como material suplementar.
-# Fim do script.
+
